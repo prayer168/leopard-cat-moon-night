@@ -755,7 +755,7 @@ function startRun(depH) {
   var ld = tonightLD();
   var b0 = brightAt(ld, depH + 0.5);
   var nMice = 3 + Math.round(5 * (1 - Math.min(1, b0 * 1.3)));
-  R = { ld: ld, h0: depH, t: 0, got: 0, ended: false, meter: 0, hidden: false, inWater: false, trail: [], trailT: 0, lastUp: null, cause: '', bannerT: 0, spotSfxT: 0, barkT: 0, curB: 0 };
+  R = { ld: ld, h0: depH, t: 0, got: 0, ended: false, meter: 0, hidden: false, inWater: false, trail: [], trailT: 0, lastUp: null, left: false, cause: '', bannerT: 0, spotSfxT: 0, barkT: 0, curB: 0 };
   var i;
   for (i = 0; i < farmers.length; i++) scene.remove(farmers[i].obj);
   for (i = 0; i < mice.length; i++) scene.remove(mice[i].obj);
@@ -888,7 +888,8 @@ function update(dt) {
     var ox = p.x - mo.obj.position.x, oz = p.z - mo.obj.position.z;
     if (ox * ox + oz * oz < 1.1) { mo.got = true; mo.obj.visible = false; R.got++; SFX.pick(); $('hudGot').textContent = R.got + ' / ' + R.total; }
   }
-  if (p.z > 16 && Math.abs(p.x) < 3 && R.t > 2) { endRun('home'); return; }
+  if (p.z < 14) R.left = true;
+  if (R.left && p.z > 16 && Math.abs(p.x) < 3) { endRun('home'); return; }
 
   // 巡田農夫
   var rate = 0, top = '', topRate = 0;
@@ -1083,7 +1084,7 @@ function showTitle() {
   folder.appendChild(el('h1', '', '石虎<br>月夜行'));
   folder.appendChild(el('p', '', '石虎媽媽要帶著小石虎撐過 <b>30 個夜晚</b>。每天晚上，月亮都會變。看懂月亮，挑最暗的時候溜進田裡抓田鼠！'));
   var btns = el('div', 'title-btns');
-  var hasSave = C && !C.over && (C.night > 0 || C.journal.length > 0);
+  var hasSave = !!(C && !C.over);
   var go = el('button', 'go', hasSave ? '繼續行動' : '開始行動');
   go.type = 'button';
   on(go, 'click', function () { audioInit(); SFX.stamp(); if (!hasSave) newCampaign(); showPlan(); });
@@ -1411,6 +1412,24 @@ function takeSuspectPhoto() {
     renderer.setSize(prev.x, prev.y, false); onResize();
     player.position.set(0, 0, 17); player.rotation.y = 0;
   } catch (e) { suspectURL = ''; }
+}
+/* 自動測試用的唯讀介面：只有網址結尾是 #test 時才會出現 */
+if (location.hash === '#test') {
+  window.__shihu = {
+    state: function () {
+      return { mode: boardMode, paused: paused, night: C ? C.night : null, stock: C ? C.stock : null, hungry: C ? C.hungry : null, raids: C ? C.raids : null,
+        ld: C ? tonightLD() : null, journal: C ? C.journal.slice() : [], notes: C ? C.notes.slice() : [],
+        run: R ? { ld: R.ld, h0: R.h0, hour: nowHour(), got: R.got, total: R.total, meter: R.meter, ended: R.ended, cause: R.cause, hidden: R.hidden, inWater: R.inWater, curB: R.curB, lastUp: R.lastUp, trail: R.trail.length, dog: R.dog ? { st: R.dog.st, x: dogObj.position.x, z: dogObj.position.z } : null } : null };
+    },
+    world: function () {
+      var i, out = { p: { x: player.position.x, z: player.position.z }, mice: [], farmers: [], bushes: bushes, trees: trees, ditch: { z: DITCH_Z, half: DITCH_HALF, bx0: BRIDGE_X0, bx1: BRIDGE_X1 } };
+      for (i = 0; i < mice.length; i++) out.mice.push({ x: mice[i].obj.position.x, z: mice[i].obj.position.z, got: mice[i].got });
+      for (i = 0; i < farmers.length; i++) out.farmers.push({ x: farmers[i].obj.position.x, z: farmers[i].obj.position.z, look: farmers[i].yaw + farmers[i].obj.userData.sweep.rotation.y, visR: farmers[i].visR });
+      return out;
+    },
+    ff: function (sec) { if (R && !R.ended) R.t += sec; },
+    sci: { drawMoon: drawMoon, phaseIdx: phaseIdx, riseHour: riseHour, moonAt: moonAt, brightAt: brightAt, illum: illum, angleOf: angleOf, lunarName: lunarName, PH: PH }
+  };
 }
 function boot() {
   load();

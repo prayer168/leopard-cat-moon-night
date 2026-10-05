@@ -1,3 +1,4 @@
 shot-*.png
 package/
 *.tgz
+test-output/
