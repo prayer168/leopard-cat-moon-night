@@ -19,4 +19,4 @@
 
 ## 檔案
 - game.html：遊戲本體（artifact 版本，不含 doctype）
-- index.html：由 build.sh 產生，部署 GitHub Pages 用
+- index.html：由 tools/build.sh 產生，部署 GitHub Pages 用
