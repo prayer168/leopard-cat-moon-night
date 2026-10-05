@@ -1,240 +1,275 @@
 <title>石虎月夜行</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@500;900&family=Noto+Serif+TC:wght@900&display=swap">
 <style>
-/* 版面概念：整個畫面是石虎眼中的夜晚田野，介面像夜裡攤開的觀察筆記卡，月光奶油色只留給月亮與重點 */
+/* 版面概念：盜賊電影裡的作戰計畫板。軟木板、拍立得、紅線、膠帶與印章；3D 行動畫面的介面是貼在螢幕上的紙片 */
 :root {
-  --night: #0b1124;
-  --night-2: #131c38;
-  --card: #18223f;
-  --line: #2b3863;
-  --ink: #eef1fa;
-  --mute: #a9b4d4;
+  --cork: #b4885a;
+  --cork-dark: #7d5a37;
+  --paper: #f7f2e6;
+  --paper-2: #ece2c8;
+  --ink: #2b2420;
+  --ink-soft: #6e5f50;
+  --string: #c4332a;
+  --tape: rgba(242, 228, 168, 0.88);
+  --hi: #ffe14d;
+  --night: #0e1a33;
   --moon: #f3e6b8;
-  --lamp: #ffb347;
-  --leaf: #8fd694;
-  --alert: #ff7a6e;
-  --display: "Huninn", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-  --body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-  color-scheme: dark;
+  --hand: "LXGW WenKai TC", "Kaiti TC", "BiauKai", "DFKai-SB", serif;
+  --stamp: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --title: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  color-scheme: light;
 }
 [hidden] { display: none !important; }
 html, body { height: 100%; }
 body {
-  margin: 0; background: var(--night); color: var(--ink);
-  font-family: var(--body); font-size: 18px; line-height: 1.6;
-  overflow: hidden; -webkit-user-select: none; user-select: none;
-  -webkit-tap-highlight-color: transparent;
+  margin: 0; background: var(--cork); color: var(--ink);
+  font-family: var(--hand); font-size: 19px; line-height: 1.5;
+  overflow: hidden; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
 }
-#stage { position: fixed; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; }
-button { font-family: var(--body); }
-button:focus-visible { outline: 3px solid var(--moon); outline-offset: 2px; }
+button { font-family: inherit; color: inherit; }
+button:focus-visible { outline: 3px solid var(--string); outline-offset: 3px; }
+#stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
 
-/* 覆蓋層 */
-.layer {
-  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+/* ---------- 軟木板 ---------- */
+.board {
+  position: fixed; inset: 0; z-index: 20; overflow-y: auto; overflow-x: hidden;
+  background-color: var(--cork); background-size: 220px 220px;
+  box-shadow: inset 0 0 0 10px var(--cork-dark), inset 0 0 60px rgba(60, 35, 10, 0.55);
   padding-inline: 16px;
-  padding-block: calc(16px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-bottom, 0px));
-  background: rgba(5, 8, 20, 0.62); z-index: 20; box-sizing: border-box;
+  padding-block: calc(18px + env(safe-area-inset-top, 0px)) calc(24px + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
 }
-.layer.clear { background: transparent; pointer-events: none; }
-.layer.clear > * { pointer-events: auto; }
-.panel {
-  width: 100%; max-width: 680px; max-height: 100%; overflow-y: auto; box-sizing: border-box;
-  background: var(--card); border: 1px solid var(--line); border-radius: 18px;
-  padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 14px;
-  box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+.board-inner { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.paper {
+  background: var(--paper); color: var(--ink); border-radius: 2px; position: relative;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.08), 0 10px 22px rgba(40, 22, 6, 0.35);
 }
-.panel.wide { max-width: 860px; }
-.eyebrow { font-size: 14px; letter-spacing: 0.12em; color: var(--lamp); font-weight: 700; }
-h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; line-height: 1.25; }
-h1 { font-size: clamp(40px, 9vw, 72px); color: var(--moon); letter-spacing: 0.04em; }
-h2 { font-size: clamp(26px, 5vw, 34px); color: var(--moon); }
-h3 { font-size: 22px; color: var(--ink); }
-p { margin: 0; }
-.mute { color: var(--mute); }
-.small { font-size: 15px; }
-.row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-.row.end { justify-content: flex-end; }
-.btn {
-  min-height: 52px; padding: 10px 22px; border-radius: 14px; border: 2px solid var(--line);
-  background: var(--night-2); color: var(--ink); font-size: 19px; font-weight: 700; cursor: pointer;
+.tape::before {
+  content: ""; position: absolute; top: -12px; left: 50%; width: 92px; height: 26px; margin-left: -46px;
+  background: var(--tape); transform: rotate(-3deg); box-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
-.btn:hover { border-color: var(--mute); }
-.btn.primary { background: var(--moon); color: #1c1a10; border-color: var(--moon); }
-.btn.primary:hover { filter: brightness(1.06); }
-.btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.note {
-  background: var(--night-2); border-radius: 12px; padding: 12px 14px; border-left: 4px solid var(--lamp);
+.pin::after {
+  content: ""; position: absolute; top: -8px; left: 50%; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff8a7a, var(--string) 55%, #7a1712);
+  box-shadow: 0 3px 4px rgba(0,0,0,0.35);
 }
-.note.good { border-left-color: var(--leaf); }
-.note.bad { border-left-color: var(--alert); }
 
-/* 標題畫面 */
-.title-wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; align-items: center; }
-.title-wrap > * { min-width: 0; }
-.levels { display: grid; grid-template-columns: 1fr; gap: 8px; }
-.lvl-btn {
-  display: flex; align-items: center; gap: 12px; text-align: left; min-height: 56px;
-  padding: 8px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--night-2);
-  color: var(--ink); font-size: 18px; cursor: pointer;
+.topbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; justify-content: space-between; }
+.file-tab {
+  background: #d9c08a; padding: 8px 18px 10px; border-radius: 8px 8px 0 0; color: var(--ink);
+  box-shadow: 0 6px 14px rgba(40, 22, 6, 0.35); display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap;
 }
-.lvl-btn .num {
-  font-family: var(--display); font-size: 22px; width: 36px; height: 36px; border-radius: 50%;
-  display: grid; place-items: center; background: var(--line); color: var(--moon); flex: none;
+.file-tab .code { font-family: var(--stamp); font-weight: 900; letter-spacing: 0.12em; font-size: 14px; color: var(--ink-soft); }
+.file-tab .night { font-family: var(--title); font-weight: 900; font-size: 26px; }
+.tag-btn {
+  font-family: var(--stamp); font-weight: 900; font-size: 15px; letter-spacing: 0.06em; cursor: pointer;
+  background: var(--paper); border: 0; padding: 10px 14px; min-height: 46px; border-radius: 3px;
+  box-shadow: 0 6px 12px rgba(40, 22, 6, 0.3); transform: rotate(1.5deg);
 }
-.lvl-btn.done .num { background: var(--leaf); color: #10240f; }
-.lvl-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.lvl-btn:not(:disabled):hover { border-color: var(--moon); }
+.tag-btn:nth-child(2) { transform: rotate(-2deg); }
+.tag-btn:hover { background: #fff; }
+.tags { display: flex; gap: 10px; flex-wrap: wrap; }
 
-/* HUD */
-#hud {
-  position: fixed; left: 0; right: 0; top: 0; z-index: 10; pointer-events: none;
-  padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 0; display: flex; gap: 10px;
-  justify-content: space-between; align-items: flex-start; flex-wrap: wrap;
+.cols { display: grid; grid-template-columns: minmax(0, 330px) minmax(0, 1fr) minmax(0, 300px); gap: 26px; align-items: start; }
+.col { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+
+.polaroid { padding: 12px 12px 14px; transform: rotate(-2deg); }
+.polaroid .photo { width: 100%; aspect-ratio: 5 / 4; background: var(--night); display: block; }
+.polaroid .cap { font-size: 24px; line-height: 1.25; padding-top: 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.polaroid .cap b { font-weight: 700; font-size: 28px; }
+.polaroid .cap span { color: var(--ink-soft); font-size: 18px; }
+
+.timeline { padding: 14px 14px 12px; transform: rotate(1deg); }
+.timeline h3, .card h3 { margin: 0 0 8px; font-family: var(--stamp); font-weight: 900; font-size: 15px; letter-spacing: 0.1em; color: var(--ink-soft); }
+.tl-bar { position: relative; height: 34px; background: #1b2747; border-radius: 4px; overflow: hidden; }
+.tl-moon { position: absolute; top: 0; bottom: 0; background: repeating-linear-gradient(45deg, #f3e6b8, #f3e6b8 8px, #e8d79c 8px, #e8d79c 16px); }
+.tl-win { position: absolute; top: 0; bottom: 0; border: 3px solid var(--string); border-radius: 4px; box-sizing: border-box; }
+.tl-ticks { display: flex; justify-content: space-between; font-family: var(--stamp); font-size: 12px; color: var(--ink-soft); padding-top: 3px; font-variant-numeric: tabular-nums; }
+.tl-legend { font-size: 15px; color: var(--ink-soft); padding: 4px 0 10px; }
+.dep { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.dep button {
+  min-height: 54px; border: 2px dashed var(--ink-soft); background: transparent; border-radius: 6px; cursor: pointer;
+  font-size: 18px; line-height: 1.15; padding: 4px;
 }
+.dep button small { display: block; font-size: 13px; color: var(--ink-soft); }
+.dep button.on { border-style: solid; border-color: var(--string); background: rgba(196, 51, 42, 0.1); }
+
+.journal { padding: 18px 16px 16px; }
+.journal-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.journal-head h2 { margin: 0; font-family: var(--title); font-weight: 900; font-size: 26px; }
+.journal-head span { color: var(--ink-soft); font-size: 16px; }
+.jwrap { position: relative; }
+.jgrid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; position: relative; }
+.slot {
+  aspect-ratio: 1 / 1.08; background: var(--paper-2); border-radius: 3px; position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+}
+.slot canvas { width: 58% !important; height: auto !important; }
+.slot .ld { font-size: 14px; line-height: 1; }
+.slot.future { background: repeating-linear-gradient(-45deg, var(--paper-2), var(--paper-2) 6px, #e4d8b9 6px, #e4d8b9 12px); color: var(--ink-soft); font-size: 22px; }
+.slot.today { background: var(--hi); box-shadow: 0 0 0 3px var(--string); }
+.slot .mark {
+  position: absolute; right: 2px; bottom: 2px; font-family: var(--stamp); font-weight: 900; font-size: 11px;
+  padding: 0 4px; border-radius: 3px; transform: rotate(-8deg); line-height: 1.3; background: var(--paper-2);
+}
+.mark.ok { color: #1f6b33; border: 1.5px solid #1f6b33; }
+.mark.bad { color: var(--string); border: 1.5px solid var(--string); }
+.mark.zz { color: var(--ink-soft); border: 1.5px solid var(--ink-soft); }
+.jstring { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
+
+.card { padding: 14px 16px; }
+.stat-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; font-size: 18px; }
+.mice { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+.mice svg { width: 22px; height: 16px; }
+.hunger { display: flex; gap: 6px; margin-top: 6px; }
+.hunger i { width: 22px; height: 22px; border-radius: 50%; border: 2px dashed var(--ink-soft); display: block; box-sizing: border-box; }
+.hunger i.on { background: var(--string); border: 2px solid var(--string); }
+.threat { display: flex; gap: 6px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
+.threat svg { width: 30px; height: 30px; }
+.sticky {
+  background: #fff3a8; padding: 14px 14px 16px; font-size: 18px; line-height: 1.45; transform: rotate(1.5deg);
+  box-shadow: 0 10px 18px rgba(40, 22, 6, 0.3); position: relative;
+}
+.sticky:nth-child(even) { transform: rotate(-1.5deg); background: #ffe9a0; }
+.sticky .who { font-family: var(--stamp); font-weight: 900; font-size: 13px; letter-spacing: 0.1em; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.sticky .new { background: var(--string); color: #fff; padding: 0 6px; border-radius: 3px; font-size: 12px; }
+
+.go {
+  font-family: var(--stamp); font-weight: 900; font-size: 30px; letter-spacing: 0.08em; color: var(--string);
+  background: rgba(247, 242, 230, 0.92); border: 5px double var(--string); border-radius: 10px; padding: 10px 18px;
+  cursor: pointer; transform: rotate(-3deg); min-height: 72px; box-shadow: 0 8px 16px rgba(40, 22, 6, 0.3);
+}
+.go:hover:not(:disabled) { background: #fff; transform: rotate(-3deg) scale(1.03); }
+.go:disabled { opacity: 0.5; cursor: not-allowed; }
+.sleep {
+  font-size: 19px; background: var(--paper); border: 0; padding: 10px 16px; min-height: 52px; cursor: pointer;
+  box-shadow: 0 6px 12px rgba(40, 22, 6, 0.3); transform: rotate(1.5deg); border-radius: 2px;
+}
+.sleep:hover { background: #fff; }
+.actions { display: flex; flex-direction: column; gap: 14px; align-items: stretch; }
+.hint { font-size: 16px; color: var(--paper); text-shadow: 0 1px 2px rgba(0,0,0,0.7); text-align: center; }
+
+.title-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 34px; align-items: center; padding-top: 2vh; }
+.folder { padding: 30px 30px 26px; background: #d9c08a; border-radius: 4px; position: relative; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 14px 30px rgba(40,22,6,0.45); }
+.folder .label { font-family: var(--stamp); font-weight: 900; letter-spacing: 0.2em; font-size: 14px; color: var(--ink-soft); }
+.folder h1 { margin: 0; font-family: var(--title); font-weight: 900; font-size: clamp(46px, 9vw, 92px); line-height: 1.05; letter-spacing: 0.04em; }
+.folder p { margin: 0; font-size: 20px; }
+.stamp {
+  position: absolute; right: 18px; top: 18px; font-family: var(--stamp); font-weight: 900; font-size: 22px; letter-spacing: 0.2em;
+  color: var(--string); border: 4px solid var(--string); padding: 2px 10px; transform: rotate(12deg); opacity: 0.85; border-radius: 6px;
+}
+.title-btns { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 6px; }
+.suspect { padding: 12px 12px 14px; transform: rotate(3deg); }
+.suspect img { width: 100%; display: block; aspect-ratio: 4 / 3; object-fit: cover; background: var(--night); }
+.suspect .cap { font-size: 22px; padding-top: 6px; }
+.rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+
+#hud { position: fixed; inset: 0; z-index: 10; pointer-events: none; }
 #hud > * { pointer-events: auto; }
-.hud-card {
-  background: rgba(19, 28, 56, 0.86); border: 1px solid var(--line); border-radius: 14px;
-  padding: 8px 12px; display: flex; gap: 10px; align-items: center;
-}
-.hud-left { display: flex; flex-direction: column; gap: 6px; }
-#hudLevel { font-family: var(--display); color: var(--moon); font-size: 18px; }
-#hudCount { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.meter { width: 140px; height: 12px; border-radius: 6px; background: var(--night); overflow: hidden; border: 1px solid var(--line); }
-.meter > i { display: block; height: 100%; width: 0%; background: var(--alert); }
+#hud #burst, #hud #banner { pointer-events: none; }
+.scrap { background: var(--paper); box-shadow: 0 6px 14px rgba(0,0,0,0.45); border-radius: 2px; }
+#hudClock { position: absolute; left: 16px; top: calc(12px + env(safe-area-inset-top, 0px)); padding: 6px 14px 8px; transform: rotate(-2deg); }
+#hudClock .t { font-family: var(--stamp); font-weight: 900; font-size: 30px; font-variant-numeric: tabular-nums; line-height: 1.1; }
+#hudClock .s { font-size: 15px; color: var(--ink-soft); }
+#hudLoot { position: absolute; left: 16px; top: calc(96px + env(safe-area-inset-top, 0px)); padding: 6px 12px; transform: rotate(1.5deg); font-size: 20px; display: flex; gap: 8px; align-items: center; }
+#hudLoot b { font-family: var(--stamp); font-weight: 900; font-size: 22px; font-variant-numeric: tabular-nums; }
+#hudEye { position: absolute; left: 16px; top: calc(146px + env(safe-area-inset-top, 0px)); padding: 6px 12px; transform: rotate(-1deg); display: flex; gap: 8px; align-items: center; font-size: 16px; }
+.eyebar { width: 110px; height: 12px; background: var(--paper-2); border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; }
+.eyebar i { display: block; height: 100%; width: 0; background: var(--string); }
+#hudSky { position: absolute; left: 50%; top: calc(10px + env(safe-area-inset-top, 0px)); transform: translateX(-50%) rotate(1.5deg); padding: 6px 6px 4px; text-align: center; }
 #hudSky canvas { display: block; }
-#hudSkyText { font-size: 15px; line-height: 1.3; max-width: 8em; }
-.hud-btns { display: flex; gap: 8px; }
-.hud-btn {
-  min-height: 48px; padding: 6px 14px; border-radius: 12px; border: 1px solid var(--line);
-  background: rgba(19, 28, 56, 0.9); color: var(--ink); font-size: 16px; font-weight: 700; cursor: pointer;
+#hudSky span { font-size: 14px; display: block; line-height: 1.3; }
+#hudBtns { position: absolute; right: 16px; top: calc(12px + env(safe-area-inset-top, 0px)); display: flex; gap: 8px; flex-direction: column; align-items: flex-end; }
+#hudBtns button { font-family: var(--stamp); font-weight: 900; font-size: 15px; min-height: 46px; padding: 6px 12px; border: 0; cursor: pointer; }
+#hudTip { position: absolute; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) rotate(-1deg); padding: 6px 16px; font-size: 18px; max-width: calc(100% - 200px); text-align: center; }
+#burst {
+  position: absolute; left: 50%; top: 32%; transform: translate(-50%, -50%) rotate(-6deg); font-family: var(--stamp); font-weight: 900;
+  font-size: clamp(30px, 6vw, 54px); color: #fff; background: var(--string); padding: 6px 22px; border-radius: 8px;
+  box-shadow: 0 0 0 5px #fff, 0 10px 20px rgba(0,0,0,0.5); letter-spacing: 0.06em; white-space: nowrap;
 }
-#hudTip {
-  position: fixed; left: 50%; transform: translateX(-50%); z-index: 10; bottom: calc(18px + env(safe-area-inset-bottom, 0px));
-  background: rgba(19, 28, 56, 0.86); border: 1px solid var(--line); border-radius: 999px; padding: 6px 18px;
-  font-size: 16px; white-space: nowrap; max-width: calc(100% - 32px); overflow: hidden; text-overflow: ellipsis; pointer-events: none;
+#banner {
+  position: absolute; left: 50%; top: 20%; transform: translate(-50%, 0) rotate(1deg); background: var(--hi); padding: 10px 22px;
+  font-size: 24px; font-weight: 700; box-shadow: 0 8px 18px rgba(0,0,0,0.45); text-align: center; max-width: calc(100% - 32px); box-sizing: border-box;
 }
-#hudTip.hide-tip { color: var(--leaf); }
-
-/* 搖桿 */
+#vig { position: fixed; inset: 0; pointer-events: none; z-index: 9; box-shadow: inset 0 0 120px 30px rgba(196, 51, 42, 0.9); opacity: 0; }
 #joy {
-  position: fixed; left: 24px; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); width: 132px; height: 132px; border-radius: 50%;
-  background: rgba(238, 241, 250, 0.08); border: 2px solid rgba(238, 241, 250, 0.25); z-index: 11; touch-action: none;
+  position: absolute; left: 22px; bottom: calc(70px + env(safe-area-inset-bottom, 0px)); width: 136px; height: 136px; border-radius: 50%;
+  border: 3px dashed rgba(247, 242, 230, 0.6); background: rgba(247, 242, 230, 0.08); touch-action: none;
 }
-#joyKnob {
-  position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%;
-  background: rgba(243, 230, 184, 0.7); pointer-events: none;
-}
+#joyKnob { position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%; background: var(--paper); box-shadow: 0 4px 10px rgba(0,0,0,0.4); pointer-events: none; }
 
-/* 月曆 */
-.clue { display: flex; gap: 16px; align-items: center; }
-.clue canvas { flex: none; }
-.cal { display: grid; grid-template-columns: 4.2em repeat(7, 1fr); gap: 6px; }
-.cal .wk { font-size: 13px; color: var(--mute); display: flex; align-items: center; line-height: 1.2; }
-.cal button {
-  min-height: 52px; border-radius: 10px; border: 2px solid var(--line); background: var(--night-2); color: var(--ink);
-  font-size: 20px; font-weight: 700; cursor: pointer; padding: 2px; font-variant-numeric: tabular-nums;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1;
-}
-.cal button small { font-size: 11px; font-weight: 500; color: var(--mute); }
-.cal button.today { border-color: var(--lamp); }
-.cal button.sel { background: var(--moon); color: #1c1a10; border-color: var(--moon); }
-.cal button.sel small { color: #4a4530; }
-.cal button:hover:not(.sel) { border-color: var(--mute); }
+.sheet-layer { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; background: rgba(20, 12, 4, 0.55); padding-inline: 16px; padding-block: calc(16px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)); box-sizing: border-box; }
+.sheet { width: 100%; max-width: 560px; max-height: 100%; overflow-y: auto; box-sizing: border-box; padding: 26px 24px 22px; display: flex; flex-direction: column; gap: 14px; transform: rotate(-1deg); }
+.sheet.wide { max-width: 860px; transform: none; }
+.sheet h2 { margin: 0; font-family: var(--title); font-weight: 900; font-size: 30px; line-height: 1.2; }
+.sheet p { margin: 0; }
+.big-stamp { align-self: flex-start; font-family: var(--stamp); font-weight: 900; font-size: 28px; letter-spacing: 0.15em; padding: 2px 14px; border: 5px solid currentColor; border-radius: 8px; transform: rotate(-6deg); }
+.big-stamp.ok { color: #1f6b33; }
+.big-stamp.bad { color: var(--string); }
+.sheet .row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+.btn-paper { font-family: var(--stamp); font-weight: 900; font-size: 17px; min-height: 50px; padding: 8px 18px; border: 2px solid var(--ink); background: var(--paper); cursor: pointer; border-radius: 4px; }
+.btn-paper.red { background: var(--string); color: #fff; border-color: var(--string); }
+.loot-line { font-size: 22px; }
+.why { background: var(--paper-2); padding: 10px 12px; border-left: 5px solid var(--string); font-size: 18px; }
+.why.ok { border-left-color: #1f6b33; }
+.helper-top { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; }
+#orbitCanvas { touch-action: none; cursor: grab; max-width: 100%; height: auto !important; }
+.phase-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.phase-cell { background: var(--paper-2); border: 0; border-radius: 3px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
+.phase-cell b { font-size: 19px; }
+.phase-cell span { font-size: 13px; color: var(--ink-soft); line-height: 1.3; text-align: center; }
+.notes-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.final-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.final-grid div { background: var(--paper-2); border-radius: 3px; padding: 6px 2px; display: flex; flex-direction: column; align-items: center; gap: 1px; text-align: center; }
+.final-grid canvas { width: 60% !important; height: auto !important; }
+.final-grid b { font-size: 15px; line-height: 1.2; }
+.final-grid span { font-size: 12px; color: var(--ink-soft); }
 
-/* 小幫手 */
-.helper-top { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; }
-.helper-top > * { min-width: 0; }
-.helper-view { display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center; }
-#orbitCanvas { touch-action: none; cursor: grab; max-width: 100%; height: auto; }
-.phase-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.phase-cell {
-  background: var(--night-2); border: 1px solid var(--line); border-radius: 12px; padding: 8px 4px;
-  display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; color: var(--ink);
+@media (max-width: 1000px) {
+  .cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .col.c-journal { grid-column: 1 / -1; order: 3; }
 }
-.phase-cell b { font-family: var(--display); font-weight: 400; font-size: 18px; color: var(--moon); }
-.phase-cell span { font-size: 13px; color: var(--mute); line-height: 1.3; text-align: center; }
-
-/* 排列卡片 */
-.slots, .pool { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
-.slot, .pcard {
-  aspect-ratio: 3 / 4; max-width: 100%; border-radius: 10px; border: 2px dashed var(--line); background: var(--night);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 12px; color: var(--mute);
-  box-sizing: border-box; padding: 2px; overflow: hidden;
-}
-.slot.filled { border-style: solid; border-color: var(--leaf); color: var(--ink); }
-.slot canvas, .pcard canvas { width: 80%; height: auto; }
-.pcard { border-style: solid; border-color: var(--line); background: var(--night-2); cursor: pointer; }
-.pcard:hover { border-color: var(--moon); }
-.pcard.used { visibility: hidden; }
-.pcard.shake { animation: shake 0.4s; border-color: var(--alert); }
-@keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
-
-/* 時間選擇 */
-.opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.opt {
-  min-height: 72px; border-radius: 14px; border: 2px solid var(--line); background: var(--night-2); color: var(--ink);
-  font-size: 20px; font-weight: 700; cursor: pointer; padding: 8px;
-}
-.opt:hover { border-color: var(--moon); }
-.rise-table { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.rise-table div { background: var(--night-2); border-radius: 10px; padding: 8px; text-align: center; font-size: 15px; line-height: 1.35; }
-.rise-table b { display: block; font-family: var(--display); font-weight: 400; color: var(--moon); font-size: 18px; }
-
-.sum-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.sum-grid div { background: var(--night-2); border-radius: 12px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
-.sum-grid b { font-family: var(--display); font-weight: 400; color: var(--moon); font-size: 19px; }
-.sum-grid span { font-size: 14px; color: var(--mute); line-height: 1.35; }
-
-@media (max-width: 720px) {
-  .title-wrap { grid-template-columns: 1fr; }
-  .helper-top { grid-template-columns: 1fr; justify-items: center; }
-  .slots, .pool { grid-template-columns: repeat(4, 1fr); }
-  .rise-table, .sum-grid { grid-template-columns: repeat(2, 1fr); }
-  .cal { grid-template-columns: 2.6em repeat(7, 1fr); gap: 4px; }
-  .cal .wk { font-size: 11px; }
-  .cal button { font-size: 17px; min-height: 46px; }
-  .cal button small { display: none; }
-  .panel { padding: 18px 16px; }
-  .meter { width: 96px; }
-}
-@media (max-width: 440px) {
-  .opts { grid-template-columns: 1fr; }
-  #hudSkyText { display: none; }
+@media (max-width: 680px) {
+  .cols { grid-template-columns: minmax(0, 1fr); }
+  .title-grid, .rules, .notes-list, .helper-top { grid-template-columns: minmax(0, 1fr); }
+  .helper-top { justify-items: center; }
+  .jgrid, .final-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .phase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #hudTip { max-width: calc(100% - 32px); bottom: calc(220px + env(safe-area-inset-bottom, 0px)); font-size: 16px; }
+  #hudSky { top: calc(64px + env(safe-area-inset-top, 0px)); left: auto; right: 16px; transform: rotate(1.5deg); }
+  #hudBtns { flex-direction: row; }
+  .eyebar { width: 80px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pcard.shake { animation: none; }
+  .go:hover:not(:disabled) { transform: rotate(-3deg); }
 }
 </style>
 
-<canvas id="stage" aria-label="3D 夜晚田野"></canvas>
-
+<canvas id="stage" aria-label="夜晚的田野"></canvas>
+<div id="vig"></div>
 <div id="hud" hidden>
-  <div class="hud-left">
-    <div class="hud-card"><span id="hudLevel">第 1 關</span><span id="hudCount">田鼠 0/4</span></div>
-    <div class="hud-card"><span class="small">被發現</span><div class="meter"><i id="hudMeter"></i></div></div>
-  </div>
-  <div class="hud-card" id="hudSky"><canvas id="hudSkyCanvas" width="56" height="56"></canvas><span id="hudSkyText">今晚的天空</span></div>
-  <div class="hud-btns">
-    <button class="hud-btn" id="hudHelp" type="button">月相小幫手</button>
-    <button class="hud-btn" id="hudMenu" type="button">選單</button>
-  </div>
+  <div id="hudClock" class="scrap"><div class="t" id="hudTime">19:00</div><div class="s" id="hudLeft">還有 3 小時</div></div>
+  <div id="hudLoot" class="scrap">田鼠 <b id="hudGot">0</b></div>
+  <div id="hudEye" class="scrap">被發現<div class="eyebar"><i id="hudMeter"></i></div></div>
+  <div id="hudSky" class="scrap"><canvas id="hudSkyCanvas" width="120" height="66"></canvas><span id="hudSkyText">南方天空</span></div>
+  <div id="hudBtns"><button type="button" class="scrap" id="btnPause">暫停</button><button type="button" class="scrap" id="btnSound">聲音：開</button></div>
+  <div id="hudTip" class="scrap">抓田鼠，再回到竹林的綠圈</div>
+  <div id="burst" hidden>被看見了！</div>
+  <div id="banner" hidden></div>
+  <div id="joy" hidden><div id="joyKnob"></div></div>
 </div>
-<div id="hudTip" hidden>躲進草叢，避開手電筒！</div>
-<div id="joy" hidden><div id="joyKnob"></div></div>
-
-<div id="layer" class="layer"><div class="panel" id="panel"></div></div>
-<div id="helpLayer" class="layer" hidden><div class="panel wide" id="helpPanel"></div></div>
+<div id="board" class="board"></div>
+<div id="sheetLayer" class="sheet-layer" hidden><div id="sheet" class="sheet paper"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function () {
 'use strict';
-
-/* ========== 月相資料與計算 ========== */
 var PI = Math.PI;
+
+/* ================= 月相與月出 ================= */
 var NUM = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
 function lunarName(d) {
   if (d <= 10) return '初' + NUM[d];
@@ -253,7 +288,7 @@ var PH = [
   { n: '下弦月', a: 270, days: '廿二、廿三', rise: '半夜 12 點' },
   { n: '殘月', a: 315, days: '廿四到廿九' }
 ];
-function phaseIdxOfDay(d) {
+function phaseIdx(d) {
   if (d === 1 || d >= 29) return 0;
   if (d <= 6) return 1;
   if (d <= 8) return 2;
@@ -263,59 +298,60 @@ function phaseIdxOfDay(d) {
   if (d <= 23) return 6;
   return 7;
 }
-function angleOfDay(d) { return ((d - 1) / 29.5) * 360; }
-function illumOf(angle) { return (1 - Math.cos(angle * PI / 180)) / 2; }
+function angleOf(d) { return ((d - 1) / 29.5) * 360; }
+function illum(angle) { return (1 - Math.cos(angle * PI / 180)) / 2; }
 function lunarAfter(d, n) { return ((d - 1 + n) % 30) + 1; }
-function isNewMoonDay(ld) { return ld === 1 || ld === 29 || ld === 30; }
-function brightWord(il) {
-  if (il < 0.05) return '幾乎全暗';
-  if (il < 0.3) return '只亮一點點';
-  if (il < 0.7) return '大約亮一半';
-  if (il < 0.95) return '很亮';
-  return '最亮';
+function riseHour(d) { return 6 + (d - 1) * 24 / 29.5; }
+function moonAt(d, h) {
+  var x = (((h - riseHour(d)) % 24) + 24) % 24;
+  return { up: x < 12, f: x / 12, x: x, alt: x < 12 ? Math.sin(PI * x / 12) : 0 };
+}
+function brightAt(d, h) {
+  var m = moonAt(d, h);
+  return m.up ? illum(angleOf(d)) * (0.45 + 0.55 * m.alt) : 0;
+}
+function clockText(h) {
+  var hh = Math.floor(h) % 24, mm = Math.floor((h - Math.floor(h)) * 60);
+  return (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+}
+function hourWord(h) {
+  h = ((h % 24) + 24) % 24;
+  var hr = Math.round(h) % 24;
+  if (hr === 0) return '半夜 12 點';
+  if (hr < 5) return '凌晨 ' + hr + ' 點';
+  if (hr < 11) return '早上 ' + hr + ' 點';
+  if (hr === 11) return '上午 11 點';
+  if (hr === 12) return '中午 12 點';
+  if (hr < 18) return '下午 ' + (hr - 12) + ' 點';
+  if (hr === 18) return '傍晚 6 點';
+  return '晚上 ' + (hr - 12) + ' 點';
 }
 
-/* 畫月相（臺灣在北半球：漸盈右側亮，漸虧左側亮） */
+/* 月相畫法：臺灣在北半球，漸盈右側亮，漸虧左側亮 */
 function drawMoon(ctx, cx, cy, r, angle, opt) {
   opt = opt || {};
   angle = ((angle % 360) + 360) % 360;
-  var rad = angle * PI / 180;
-  var il = illumOf(angle);
-  var waxing = angle <= 180;
+  var rad = angle * PI / 180, il = illum(angle), waxing = angle <= 180;
   var a = Math.max(Math.abs(Math.cos(rad)) * r, 0.001);
   ctx.save();
   if (il < 0.02) {
     if (opt.outline) {
-      ctx.setLineDash([4, 4]);
-      ctx.strokeStyle = 'rgba(169,180,212,0.7)';
-      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]); ctx.strokeStyle = opt.outlineColor || 'rgba(110,95,80,0.8)'; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, PI * 2); ctx.stroke();
     }
-    ctx.restore();
-    return;
+    ctx.restore(); return;
   }
-  if (opt.dark !== false) {
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, PI * 2);
-    ctx.fillStyle = opt.darkColor || '#222b49'; ctx.fill();
-  }
-  if (opt.glow) { ctx.shadowColor = 'rgba(243,230,184,0.55)'; ctx.shadowBlur = r * 0.5; }
-  ctx.beginPath();
-  ctx.moveTo(cx, cy - r);
+  if (opt.dark !== false) { ctx.beginPath(); ctx.arc(cx, cy, r, 0, PI * 2); ctx.fillStyle = opt.darkColor || '#2a3352'; ctx.fill(); }
+  if (opt.glow) { ctx.shadowColor = 'rgba(243,230,184,0.7)'; ctx.shadowBlur = r * 0.6; }
+  ctx.beginPath(); ctx.moveTo(cx, cy - r);
   ctx.arc(cx, cy, r, -PI / 2, PI / 2, !waxing);
   var crescent = il < 0.5;
-  var bulgeRight = (waxing && crescent) || (!waxing && !crescent);
-  if (bulgeRight) ctx.ellipse(cx, cy, a, r, 0, PI / 2, -PI / 2, true);
+  if ((waxing && crescent) || (!waxing && !crescent)) ctx.ellipse(cx, cy, a, r, 0, PI / 2, -PI / 2, true);
   else ctx.ellipse(cx, cy, a, r, 0, PI / 2, PI * 1.5, false);
-  ctx.closePath();
-  ctx.fillStyle = '#f3e6b8';
-  ctx.fill();
-  ctx.shadowBlur = 0;
-  ctx.clip();
-  ctx.fillStyle = 'rgba(150,136,96,0.28)';
+  ctx.closePath(); ctx.fillStyle = '#f3e6b8'; ctx.fill(); ctx.shadowBlur = 0; ctx.clip();
+  ctx.fillStyle = 'rgba(150,136,96,0.3)';
   var cr = [[-0.3, -0.25, 0.18], [0.25, 0.1, 0.22], [-0.1, 0.4, 0.12], [0.45, -0.4, 0.1], [-0.5, 0.15, 0.1]];
-  for (var i = 0; i < cr.length; i++) {
-    ctx.beginPath(); ctx.arc(cx + cr[i][0] * r, cy + cr[i][1] * r, cr[i][2] * r, 0, PI * 2); ctx.fill();
-  }
+  for (var i = 0; i < cr.length; i++) { ctx.beginPath(); ctx.arc(cx + cr[i][0] * r, cy + cr[i][1] * r, cr[i][2] * r, 0, PI * 2); ctx.fill(); }
   ctx.restore();
 }
 var DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -323,1209 +359,1068 @@ function makeCanvas(w, h) {
   var c = document.createElement('canvas');
   c.width = Math.round(w * DPR); c.height = Math.round(h * DPR);
   c.style.width = w + 'px'; c.style.height = h + 'px';
-  var ctx = c.getContext('2d'); ctx.scale(DPR, DPR);
+  c.getContext('2d').scale(DPR, DPR);
   return c;
 }
-function moonCanvas(size, angle, bg) {
-  var c = makeCanvas(size, size);
-  var ctx = c.getContext('2d');
-  if (bg) { ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(size / 2, size / 2, size / 2, 0, PI * 2); ctx.fill(); }
-  drawMoon(ctx, size / 2, size / 2, size * 0.38, angle, { outline: true });
+function miniMoon(size, angle, dark) {
+  var c = makeCanvas(size, size), ctx = c.getContext('2d');
+  if (dark) { ctx.fillStyle = '#16213d'; ctx.beginPath(); ctx.arc(size / 2, size / 2, size / 2, 0, PI * 2); ctx.fill(); }
+  drawMoon(ctx, size / 2, size / 2, size * 0.38, angle, { outline: true, outlineColor: dark ? 'rgba(200,210,235,0.6)' : null });
   return c;
 }
-
-/* ========== 小工具 ========== */
-function $(id) { return document.getElementById(id); }
-function el(tag, cls, html) {
-  var e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (html !== undefined) e.innerHTML = html;
-  return e;
-}
-function btn(label, cls, fn) {
-  var b = el('button', 'btn' + (cls ? ' ' + cls : ''), label);
-  b.type = 'button';
-  b.addEventListener('click', fn);
-  return b;
-}
-function shuffle(arr) {
-  for (var i = arr.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+/* 夜空照片：面向南方，左東右西，月亮沿弧線從東邊升起、西邊落下 */
+function skyPhoto(canvas, w, h, d, hour) {
+  var ctx = canvas.getContext('2d');
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  var b = brightAt(d, hour);
+  var g = ctx.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0, b > 0.05 ? '#24365e' : '#0b1328'); g.addColorStop(1, b > 0.05 ? '#3a4d78' : '#17213f');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = 'rgba(255,255,255,' + (0.85 - b * 0.6).toFixed(2) + ')';
+  for (var i = 0; i < 40; i++) { ctx.fillRect((i * 97.13) % w, (i * 53.7) % (h * 0.7), 1.3, 1.3); }
+  var gy = h * 0.8;
+  var m = moonAt(d, hour);
+  if (m.up && illum(angleOf(d)) > 0.04) {
+    var ang = PI - m.f * PI;
+    drawMoon(ctx, w / 2 + Math.cos(ang) * w * 0.4, gy - Math.sin(ang) * h * 0.62, Math.min(w, h) * 0.11, angleOf(d), { glow: true, darkColor: '#1c2645' });
   }
-  return arr;
+  ctx.fillStyle = '#081008';
+  ctx.fillRect(0, gy, w, h - gy);
+  for (var k = 0; k < w; k += 7) { var bh = 6 + ((k * 13) % 17) * (h / 240); ctx.fillRect(k, gy - bh, 2, bh); }
+  ctx.fillStyle = 'rgba(247,242,230,0.8)'; ctx.font = Math.max(10, Math.round(h / 20)) + 'px "Noto Sans TC", sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('東', 12, h - 5); ctx.fillText('南', w / 2, h - 5); ctx.fillText('西', w - 12, h - 5);
 }
-function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+/* ================= 小工具 ================= */
+function $(id) { return document.getElementById(id); }
+function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
+function on(e, ev, fn) { e.addEventListener(ev, fn); return e; }
+function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+var MOUSE_SVG = '<svg viewBox="0 0 22 16" aria-hidden="true"><ellipse cx="11" cy="9" rx="7" ry="5" fill="#6e5f50"/><circle cx="16" cy="5" r="2.4" fill="#c99a90"/><circle cx="17.5" cy="8.5" r="0.9" fill="#2b2420"/><path d="M4 10 Q0 12 1 15" stroke="#c99a90" stroke-width="1.2" fill="none"/></svg>';
+var FARMER_SVG = '<svg viewBox="0 0 30 30" aria-hidden="true"><path d="M3 12 L15 4 L27 12 Z" fill="#c9a96a" stroke="#2b2420" stroke-width="1.2"/><circle cx="15" cy="15" r="4" fill="#d9a77c"/><rect x="9" y="19" width="12" height="10" rx="3" fill="#4a5f86"/></svg>';
+var DOG_SVG = '<svg viewBox="0 0 30 30" aria-hidden="true"><ellipse cx="14" cy="18" rx="9" ry="5.5" fill="#8a5a2b"/><circle cx="23" cy="12" r="4.5" fill="#8a5a2b"/><path d="M21 8 L22 4 L24.5 8 Z" fill="#5c3a1a"/><circle cx="24.5" cy="11.5" r="0.9" fill="#2b2420"/><path d="M5 16 Q2 12 4 9" stroke="#8a5a2b" stroke-width="2" fill="none"/></svg>';
+var OWL_SVG = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><ellipse cx="10" cy="11" rx="7" ry="8" fill="#8a6440"/><path d="M4 5 L6 8 M16 5 L14 8" stroke="#8a6440" stroke-width="2"/><circle cx="7.3" cy="9.5" r="2.4" fill="#ffe14d"/><circle cx="12.7" cy="9.5" r="2.4" fill="#ffe14d"/><circle cx="7.3" cy="9.5" r="1" fill="#2b2420"/><circle cx="12.7" cy="9.5" r="1" fill="#2b2420"/></svg>';
 
-var store = { done: {} };
-try { var raw = localStorage.getItem('shihu-moon-progress'); if (raw) store = JSON.parse(raw) || store; } catch (e) {}
-if (!store.done) store.done = {};
-function saveStore() { try { localStorage.setItem('shihu-moon-progress', JSON.stringify(store)); } catch (e) {} }
-function unlocked(id) { return id === 1 || !!store.done[id - 1] || !!store.done[id]; }
-
-/* ========== 畫面切換 ========== */
-var layer = $('layer'), panel = $('panel');
-function showPanel(build, wide) {
-  panel.innerHTML = '';
-  panel.className = 'panel' + (wide ? ' wide' : '');
-  build(panel);
-  layer.hidden = false;
-  panel.scrollTop = 0;
-  var f = panel.querySelector('.btn.primary');
-  if (f) { try { f.focus({ preventScroll: true }); } catch (e) {} }
+/* ================= 存檔 ================= */
+var SAVE_KEY = 'shihu-heist-v2';
+var C = null;
+var prefs = { sound: true };
+function newCampaign() {
+  C = { startLD: 12, night: 0, stock: 5, hungry: 0, raids: 0, journal: [], notes: [], over: false };
+  save();
 }
-function hidePanel() { layer.hidden = true; }
-function setHud(on) {
-  $('hud').hidden = !on; $('hudTip').hidden = !on;
-  $('joy').hidden = !(on && isTouch);
+function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify({ c: C, p: prefs })); } catch (e) {} }
+function load() {
+  try {
+    var raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return;
+    var o = JSON.parse(raw);
+    if (o && o.p) prefs = o.p;
+    if (o && o.c && typeof o.c.night === 'number') C = o.c;
+  } catch (e) {}
 }
+function tonightLD() { return lunarAfter(C.startLD, C.night); }
+function guardCount() { return 1 + Math.min(2, Math.floor(C.raids / 2)); }
+function dogActive() { return C.raids >= 2; }
 
-/* ========== 3D 世界 ========== */
-var renderer, scene, camera, hemi, moonLight, nightVision;
-var player, farmers = [], targets = [], bushes = [], trees = [];
-var ringMat, coneMat, exitRing;
-var canvas3d = $('stage');
-
-function canvasTexture(w, h, draw) {
-  var c = document.createElement('canvas'); c.width = w; c.height = h;
-  draw(c.getContext('2d'), w, h);
-  var t = new THREE.CanvasTexture(c);
-  return t;
+/* ================= 貓頭鷹情報 ================= */
+var NOTES = [
+  { id: 'hello', when: function (ld, c) { return c.night === 0; }, t: '我是領角鴞，這片田的情報都在我這裡。月亮每天晚上的樣子和出現的時間都不一樣，看清楚再出動！' },
+  { id: 'gib', when: function (ld) { return ld >= 9 && ld <= 14; }, t: '盈凸月：亮的部分一天比一天大。再過幾天就是滿月，那時候整晚都很亮。' },
+  { id: 'mice', when: function (ld, c) { return c.night >= 1; }, t: '田鼠很怕月光。越暗的夜晚，跑出來的田鼠越多。' },
+  { id: 'full', when: function (ld) { return ld === 15 || ld === 16; }, t: '滿月！整個月最亮的夜晚。它傍晚從東邊升起，一整晚都掛在天上。' },
+  { id: 'self', when: function (ld, c) { return c.night >= 3; }, t: '月亮自己不會發光，是太陽照亮了它的一半。我們看到亮的部分有多少，就是月相。' },
+  { id: 'wane', when: function (ld) { return ld >= 17 && ld <= 21; }, t: '滿月過後，月亮從右邊開始變暗。而且它每天大約晚 50 分鐘才升起，看看時間軸上的亮條往右移了！' },
+  { id: 'dog', when: function (ld, c) { return c.raids >= 2; }, t: '小心！農夫養了一隻狗，牠會聞著你走過的氣味追過來。走進水圳，氣味就斷了。' },
+  { id: 'last', when: function (ld) { return ld === 22 || ld === 23; }, t: '下弦月：左半邊亮。它大約半夜才升起，所以前半夜還很暗！' },
+  { id: 'old', when: function (ld) { return ld >= 24 && ld <= 28; }, t: '殘月：只剩左邊一條細細的亮光，清晨才升起。再過幾天就是新月。' },
+  { id: 'new', when: function (ld) { return ld === 1 || ld >= 29; }, t: '新月：月亮跟著太陽一起升起、一起下山，整晚都看不到月亮。這是行動的好時機！' },
+  { id: 'cres', when: function (ld) { return ld >= 2 && ld <= 6; }, t: '眉形月：右邊亮了一點點。傍晚它在西邊天空，很快就下山了。' },
+  { id: 'first', when: function (ld) { return ld === 7 || ld === 8; }, t: '上弦月：右半邊亮。它大約中午升起、半夜下山，所以後半夜很暗！' },
+  { id: 'cycle', when: function (ld, c) { return c.night >= 26; }, t: '你發現了嗎？月亮從滿月變新月，再變回來，一輪大約 29.5 天，差不多就是農曆一個月。' }
+];
+function refreshNotes() {
+  var ld = tonightLD(), fresh = [];
+  for (var i = 0; i < NOTES.length; i++) {
+    var n = NOTES[i];
+    if (C.notes.indexOf(n.id) < 0 && n.when(ld, C)) { C.notes.push(n.id); fresh.push(n.id); }
+  }
+  return fresh;
 }
-function lam(color, extra) {
-  var o = { color: color };
-  if (extra) for (var k in extra) o[k] = extra[k];
-  return new THREE.MeshLambertMaterial(o);
+function noteById(id) { for (var i = 0; i < NOTES.length; i++) if (NOTES[i].id === id) return NOTES[i]; return null; }
+
+/* ================= 聲音（WebAudio 現場合成） ================= */
+var AC = null, master = null, musicTimer = null, musicStep = 0, nextNoteT = 0, tension = 0;
+function audioInit() {
+  if (AC) { if (AC.state === 'suspended') AC.resume(); return; }
+  try {
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    master = AC.createGain(); master.gain.value = prefs.sound ? 0.55 : 0; master.connect(AC.destination);
+  } catch (e) { AC = null; }
+}
+function setSound(onOff) {
+  prefs.sound = onOff; save();
+  if (master) master.gain.value = onOff ? 0.55 : 0;
+  var b = $('btnSound'); if (b) b.textContent = onOff ? '聲音：開' : '聲音：關';
+}
+function tone(f, t0, dur, type, vol) {
+  if (!AC) return;
+  var o = AC.createOscillator(), g = AC.createGain();
+  o.type = type || 'triangle'; o.frequency.setValueAtTime(f, t0);
+  g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol || 0.2, t0 + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.connect(g); g.connect(master); o.start(t0); o.stop(t0 + dur + 0.05);
+}
+var noiseBuf = null;
+function noise(t0, dur, vol, freq, q) {
+  if (!AC) return;
+  if (!noiseBuf) {
+    noiseBuf = AC.createBuffer(1, Math.floor(AC.sampleRate * 0.5), AC.sampleRate);
+    var d = noiseBuf.getChannelData(0);
+    for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  var s = AC.createBufferSource(), f = AC.createBiquadFilter(), g = AC.createGain();
+  s.buffer = noiseBuf; f.type = 'bandpass'; f.frequency.value = freq || 2000; f.Q.value = q || 1;
+  g.gain.setValueAtTime(vol || 0.2, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  s.connect(f); f.connect(g); g.connect(master); s.start(t0); s.stop(t0 + dur + 0.02);
+}
+/* 躡手躡腳的低音撥弦：A 小調 */
+var BASS = [110, 0, 164.8, 0, 110, 130.8, 0, 123.5, 110, 0, 164.8, 0, 98, 0, 103.8, 0];
+var EIGHTH = 0.29;
+function musicTick() {
+  if (!AC) return;
+  while (nextNoteT < AC.currentTime + 0.25) {
+    var s = musicStep % 16, f = BASS[s];
+    if (f) tone(f, nextNoteT, 0.22, 'triangle', 0.32);
+    if (s % 2 === 1) noise(nextNoteT, 0.04, 0.05, 7000, 2);
+    if (tension > 0.25) tone(s % 2 === 0 ? 659.3 : 622.3, nextNoteT, 0.12, 'square', 0.035 + 0.05 * tension);
+    if (s === 0 && musicStep % 32 === 0) tone(440, nextNoteT, 1.6, 'sine', 0.05);
+    nextNoteT += EIGHTH; musicStep++;
+  }
+}
+function musicStart() { if (!AC) return; musicStop(); nextNoteT = AC.currentTime + 0.1; musicStep = 0; musicTimer = setInterval(musicTick, 90); }
+function musicStop() { if (musicTimer) { clearInterval(musicTimer); musicTimer = null; } }
+var SFX = {
+  pick: function () { if (!AC) return; var t = AC.currentTime; tone(880, t, 0.08, 'square', 0.12); tone(1318.5, t + 0.07, 0.12, 'square', 0.12); },
+  spot: function () { if (!AC) return; var t = AC.currentTime; tone(233, t, 0.35, 'sawtooth', 0.16); tone(220, t, 0.35, 'sawtooth', 0.16); },
+  bark: function () { if (!AC) return; var t = AC.currentTime; noise(t, 0.09, 0.4, 700, 3); noise(t + 0.16, 0.09, 0.35, 760, 3); tone(320, t, 0.08, 'sawtooth', 0.08); },
+  caught: function () { if (!AC) return; var t = AC.currentTime; tone(440, t, 0.2, 'square', 0.14); tone(330, t + 0.18, 0.2, 'square', 0.14); tone(220, t + 0.36, 0.45, 'square', 0.14); },
+  win: function () { if (!AC) return; var t = AC.currentTime; var n = [523.3, 659.3, 784, 1046.5]; for (var i = 0; i < 4; i++) tone(n[i], t + i * 0.09, 0.3, 'triangle', 0.18); },
+  shimmer: function () { if (!AC) return; var t = AC.currentTime; tone(1568, t, 0.9, 'sine', 0.06); tone(2093, t + 0.12, 0.9, 'sine', 0.05); },
+  stamp: function () { if (!AC) return; noise(AC.currentTime, 0.12, 0.5, 180, 0.7); },
+  splash: function () { if (!AC) return; noise(AC.currentTime, 0.25, 0.18, 1400, 0.8); }
+};
+
+/* ================= 3D 世界 ================= */
+var renderer, scene, camera, hemi, moonLight, nightVision, fireflies;
+var player, farmers = [], mice = [], bushes = [], trees = [], dogObj, exitRing, kennelPos = { x: -12, z: -14 };
+var coneGeo, coneMat, ringGeo, ringMat;
+var CONE_LEN = 6.5, CONE_HALF = 0.42;
+var DITCH_Z = -5, DITCH_HALF = 1.0, BRIDGE_X0 = -0.7, BRIDGE_X1 = 1.7;
+var BUSH_POS = [[-6, 10], [6, 10], [0, 4], [-12, 0], [12, 0], [-4, -2], [4, -9], [-14, -9], [14, -2], [-8, -12], [10, -16], [0, -14], [-17, -14], [17, 6], [-17, 4], [8, 4], [-9, 6], [16, -16], [-3, -19]];
+var TREE_POS = [[-18, 12], [18, 13], [-11, 15], [12, 15], [-20, -1], [20, -10], [-6, -21], [14, -20], [-14, -20], [3, -1], [-2, 9]];
+var MICE_POS = [[-16, -10], [16, -12], [-4, -17], [10, 4], [-14, 6], [5, -12], [18, -1], [-10, -16], [2, -9], [-6, 2], [7, -18], [-19, -8], [12, -8], [-7, -8]];
+var ROUTES = [
+  { pts: [[-13, 1], [13, 1]], speed: 1.7 },
+  { pts: [[-8, -15], [8, -15], [8, -9], [-8, -9]], speed: 1.6 },
+  { pts: [[15, 9], [15, -16]], speed: 1.8 }
+];
+
+function canvasTex(w, h, draw) { var c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); return new THREE.CanvasTexture(c); }
+function lam(color, extra) { var o = { color: color }; if (extra) for (var k in extra) o[k] = extra[k]; return new THREE.MeshLambertMaterial(o); }
+function bubbleSprite(txt, bg) {
+  var t = canvasTex(128, 80, function (ctx) {
+    ctx.fillStyle = bg; ctx.strokeStyle = '#2b2420'; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(14, 6); ctx.lineTo(114, 6); ctx.lineTo(114, 56); ctx.lineTo(74, 56); ctx.lineTo(60, 74); ctx.lineTo(56, 56); ctx.lineTo(14, 56); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#2b2420'; ctx.font = '900 34px "Noto Sans TC", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, 64, 32);
+  });
+  var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false }));
+  sp.scale.set(1.3, 0.8, 1); sp.renderOrder = 10;
+  return sp;
 }
 
 function makeShihu() {
   var g = new THREE.Group();
-  var fur = canvasTexture(128, 128, function (ctx, w, h) {
-    ctx.fillStyle = '#b98d55'; ctx.fillRect(0, 0, w, h);
-    ctx.fillStyle = '#3b2816';
-    for (var i = 0; i < 26; i++) {
-      ctx.beginPath();
-      ctx.ellipse(Math.random() * w, Math.random() * h, 4 + Math.random() * 5, 3 + Math.random() * 3, Math.random() * PI, 0, PI * 2);
-      ctx.fill();
-    }
+  var fur = canvasTex(128, 128, function (ctx, w, h) {
+    ctx.fillStyle = '#b98d55'; ctx.fillRect(0, 0, w, h); ctx.fillStyle = '#3b2816';
+    for (var i = 0; i < 26; i++) { ctx.beginPath(); ctx.ellipse((i * 37) % w, (i * 61) % h, 4 + (i % 4), 3 + (i % 3), i, 0, PI * 2); ctx.fill(); }
   });
   var furMat = lam(0xffffff, { map: fur });
-  var body = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.45, 1.1), furMat);
-  body.position.y = 0.55; body.castShadow = true; g.add(body);
-  var head = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.42, 0.45), furMat);
-  head.position.set(0, 0.72, -0.72); head.castShadow = true; g.add(head);
+  var body = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.45, 1.1), furMat); body.position.y = 0.55; body.castShadow = true; g.add(body);
+  var head = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.42, 0.45), furMat); head.position.set(0, 0.72, -0.72); head.castShadow = true; g.add(head);
   var white = lam(0xf4efe2);
-  // 額頭兩條白色縱紋
-  for (var s = -1; s <= 1; s += 2) {
-    var st = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.02, 0.32), white);
-    st.position.set(0.07 * s, 0.94, -0.72); g.add(st);
-  }
-  var muzzle = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.18, 0.12), white);
-  muzzle.position.set(0, 0.64, -0.98); g.add(muzzle);
-  var earMat = lam(0x2c1d10);
+  for (var s = -1; s <= 1; s += 2) { var st = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.02, 0.32), white); st.position.set(0.07 * s, 0.94, -0.72); g.add(st); }
+  var muzzle = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.18, 0.12), white); muzzle.position.set(0, 0.64, -0.98); g.add(muzzle);
   for (var e = -1; e <= 1; e += 2) {
-    var ear = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.24, 4), earMat);
-    ear.position.set(0.17 * e, 1.04, -0.66); g.add(ear);
-    // 耳後白斑
-    var spot = new THREE.Mesh(new THREE.CircleGeometry(0.055, 10), new THREE.MeshBasicMaterial({ color: 0xf4efe2 }));
-    spot.position.set(0.17 * e, 1.02, -0.58); g.add(spot);
-    var eye = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), new THREE.MeshBasicMaterial({ color: 0xc8ff7a }));
-    eye.position.set(0.12 * e, 0.8, -0.95); g.add(eye);
+    var ear = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.24, 4), lam(0x2c1d10)); ear.position.set(0.17 * e, 1.04, -0.66); g.add(ear);
+    var spot = new THREE.Mesh(new THREE.CircleGeometry(0.055, 10), new THREE.MeshBasicMaterial({ color: 0xf4efe2 })); spot.position.set(0.17 * e, 1.02, -0.58); g.add(spot);
+    var eye = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), new THREE.MeshBasicMaterial({ color: 0xc8ff7a })); eye.position.set(0.12 * e, 0.8, -0.95); g.add(eye);
   }
-  var tail = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.8, 6), lam(0x8a6538));
-  tail.position.set(0, 0.62, 0.9); tail.rotation.x = 1.0; g.add(tail);
-  var legs = [];
-  var legMat = lam(0x9c7444);
-  var lp = [[-0.18, -0.38], [0.18, -0.38], [-0.18, 0.38], [0.18, 0.38]];
+  var tail = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.8, 6), lam(0x8a6538)); tail.position.set(0, 0.62, 0.9); tail.rotation.x = 1.0; g.add(tail);
+  var legs = [], lp = [[-0.18, -0.38], [0.18, -0.38], [-0.18, 0.38], [0.18, 0.38]];
   for (var i = 0; i < 4; i++) {
-    var lg = new THREE.Group();
-    lg.position.set(lp[i][0], 0.4, lp[i][1]);
-    var leg = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.4, 6), legMat);
-    leg.position.y = -0.2; lg.add(leg); g.add(lg); legs.push(lg);
+    var lg = new THREE.Group(); lg.position.set(lp[i][0], 0.4, lp[i][1]);
+    var leg = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.4, 6), lam(0x9c7444)); leg.position.y = -0.2; lg.add(leg); g.add(lg); legs.push(lg);
   }
   g.userData.legs = legs;
   return g;
 }
-
 function makeFarmer() {
   var g = new THREE.Group();
-  var body = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.4, 1.2, 8), lam(0x4a5f86));
-  body.position.y = 0.9; body.castShadow = true; g.add(body);
-  var legs = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.4, 8), lam(0x2e2a26));
-  legs.position.y = 0.2; g.add(legs);
-  var head = new THREE.Mesh(new THREE.SphereGeometry(0.24, 10, 8), lam(0xd9a77c));
-  head.position.y = 1.72; g.add(head);
-  // 斗笠
-  var hat = new THREE.Mesh(new THREE.ConeGeometry(0.62, 0.32, 14), lam(0xd8c08a));
-  hat.position.y = 1.98; hat.castShadow = true; g.add(hat);
-  var lamp = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.3, 8), new THREE.MeshBasicMaterial({ color: 0xffd27a }));
-  lamp.rotation.z = PI / 2; lamp.position.set(0.45, 1.05, 0); g.add(lamp);
+  var body = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.4, 1.2, 8), lam(0x4a5f86)); body.position.y = 0.9; body.castShadow = true; g.add(body);
+  var legs = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.4, 8), lam(0x2e2a26)); legs.position.y = 0.2; g.add(legs);
+  var head = new THREE.Mesh(new THREE.SphereGeometry(0.24, 10, 8), lam(0xd9a77c)); head.position.y = 1.72; g.add(head);
+  var hat = new THREE.Mesh(new THREE.ConeGeometry(0.62, 0.32, 14), lam(0xd8c08a)); hat.position.y = 1.98; hat.castShadow = true; g.add(hat);
+  var lamp = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.3, 8), new THREE.MeshBasicMaterial({ color: 0xffd27a })); lamp.rotation.z = PI / 2; lamp.position.set(0.45, 1.05, 0); g.add(lamp);
   var sweep = new THREE.Group(); g.add(sweep);
-  var cone = new THREE.Mesh(coneGeo, coneMat);
-  cone.position.y = 0.06; sweep.add(cone);
-  var ring = new THREE.Mesh(ringGeo, ringMat);
-  ring.position.y = 0.05; g.add(ring);
-  var alertSp = makeTextSprite('!', '#ff7a6e');
-  alertSp.position.y = 2.7; alertSp.visible = false; g.add(alertSp);
-  g.userData = { sweep: sweep, ring: ring, alert: alertSp };
+  var cone = new THREE.Mesh(coneGeo, coneMat); cone.position.y = 0.06; sweep.add(cone);
+  var ring = new THREE.Mesh(ringGeo, ringMat); ring.position.y = 0.05; g.add(ring);
+  var bub = bubbleSprite('!', '#ffe14d'); bub.position.y = 2.9; bub.visible = false; g.add(bub);
+  g.userData = { sweep: sweep, ring: ring, bub: bub };
   return g;
 }
-
-function makeTextSprite(txt, color) {
-  var t = canvasTexture(64, 64, function (ctx) {
-    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(32, 32, 28, 0, PI * 2); ctx.fill();
-    ctx.fillStyle = '#1c1a10'; ctx.font = 'bold 44px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(txt, 32, 34);
-  });
-  var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false }));
-  sp.scale.set(0.8, 0.8, 0.8);
-  return sp;
+function makeDog() {
+  var g = new THREE.Group(), fur = lam(0x8a5a2b), dark = lam(0x5c3a1a);
+  var body = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.45, 1.0), fur); body.position.y = 0.6; body.castShadow = true; g.add(body);
+  var head = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.4, 0.45), fur); head.position.set(0, 0.85, -0.65); g.add(head);
+  var snout = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.18, 0.22), dark); snout.position.set(0, 0.78, -0.95); g.add(snout);
+  for (var e = -1; e <= 1; e += 2) { var ear = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.22, 4), dark); ear.position.set(0.14 * e, 1.13, -0.6); g.add(ear); }
+  var tail = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.5, 5), fur); tail.position.set(0, 0.95, 0.6); tail.rotation.x = -0.7; g.add(tail);
+  var legs = [], lp = [[-0.16, -0.32], [0.16, -0.32], [-0.16, 0.32], [0.16, 0.32]];
+  for (var i = 0; i < 4; i++) { var lg = new THREE.Group(); lg.position.set(lp[i][0], 0.4, lp[i][1]); var leg = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.4, 5), fur); leg.position.y = -0.2; lg.add(leg); g.add(lg); legs.push(lg); }
+  var bub = bubbleSprite('汪!', '#ffffff'); bub.position.y = 2.0; bub.visible = false; g.add(bub);
+  var q = bubbleSprite('?', '#ffffff'); q.position.y = 2.0; q.visible = false; g.add(q);
+  g.userData = { legs: legs, tail: tail, bub: bub, q: q };
+  return g;
 }
-
 function makeMouse() {
   var g = new THREE.Group();
-  var b = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), lam(0x8b8378));
-  b.scale.set(1, 0.8, 1.4); b.position.y = 0.18; g.add(b);
+  var b = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), lam(0x8b8378)); b.scale.set(1, 0.8, 1.4); b.position.y = 0.18; g.add(b);
   for (var s = -1; s <= 1; s += 2) {
-    var ear = new THREE.Mesh(new THREE.CircleGeometry(0.08, 8), lam(0xc99a90, { side: THREE.DoubleSide }));
-    ear.position.set(0.09 * s, 0.36, -0.15); g.add(ear);
-    var eye = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), new THREE.MeshBasicMaterial({ color: 0xff8a7a }));
-    eye.position.set(0.07 * s, 0.24, -0.27); g.add(eye);
+    var ear = new THREE.Mesh(new THREE.CircleGeometry(0.08, 8), lam(0xc99a90, { side: THREE.DoubleSide })); ear.position.set(0.09 * s, 0.36, -0.15); g.add(ear);
+    var eye = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), new THREE.MeshBasicMaterial({ color: 0xff8a7a })); eye.position.set(0.07 * s, 0.24, -0.27); g.add(eye);
   }
-  var tail = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.02, 0.5, 4), lam(0xc99a90));
-  tail.rotation.x = PI / 2 - 0.3; tail.position.set(0, 0.12, 0.45); g.add(tail);
-  var halo = new THREE.Mesh(new THREE.RingGeometry(0.45, 0.55, 24), new THREE.MeshBasicMaterial({ color: 0x8fd694, transparent: true, opacity: 0.5, depthWrite: false }));
+  var halo = new THREE.Mesh(new THREE.RingGeometry(0.45, 0.55, 24), new THREE.MeshBasicMaterial({ color: 0xffe14d, transparent: true, opacity: 0.55, depthWrite: false }));
   halo.rotation.x = -PI / 2; halo.position.y = 0.04; g.add(halo);
   return g;
 }
-
-var cardTex = [];
-function makeCard(idx) {
-  if (!cardTex[idx]) {
-    cardTex[idx] = canvasTexture(128, 170, function (ctx, w, h) {
-      ctx.fillStyle = '#18223f'; ctx.fillRect(0, 0, w, h);
-      ctx.strokeStyle = '#f3e6b8'; ctx.lineWidth = 6; ctx.strokeRect(4, 4, w - 8, h - 8);
-      drawMoon(ctx, w / 2, h / 2, 42, PH[idx].a, { outline: true });
-    });
-  }
-  var m = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.2), new THREE.MeshBasicMaterial({ map: cardTex[idx], side: THREE.DoubleSide }));
-  var g = new THREE.Group();
-  m.position.y = 1.1; g.add(m);
-  var halo = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.68, 24), new THREE.MeshBasicMaterial({ color: 0xf3e6b8, transparent: true, opacity: 0.5, depthWrite: false }));
-  halo.rotation.x = -PI / 2; halo.position.y = 0.04; g.add(halo);
-  g.userData.card = m;
-  return g;
-}
-
-var coneGeo, ringGeo;
-var CONE_LEN = 6.5, CONE_HALF = 0.42;
-var BUSH_POS = [[-6, 10], [6, 10], [0, 4], [-12, 0], [12, 0], [-4, -4], [4, -8], [-14, -8], [14, -6], [-8, -12], [10, -16], [0, -14], [-17, -14], [17, 6], [-17, 4], [8, 4], [-9, 6], [16, -16], [-3, -19]];
-var TREE_POS = [[-18, 12], [18, 13], [-11, 15], [12, 15], [-20, -4], [20, -10], [-6, -21], [14, -20], [-14, -20], [3, -3], [-2, 9]];
-var MICE_POS = [[-16, -10], [16, -12], [-4, -17], [10, 4], [-14, 6], [5, -11], [18, -2], [-10, -16], [2, -6], [-6, 2]];
-var ROUTES = [
-  { pts: [[-13, -2], [13, -2]], speed: 1.7 },
-  { pts: [[-8, -14], [8, -14], [8, -7], [-8, -7]], speed: 1.6 },
-  { pts: [[15, 9], [15, -15]], speed: 1.8 },
-  { pts: [[-15, 8], [-15, -15]], speed: 1.6 }
-];
 
 function buildWorld() {
-  renderer = new THREE.WebGLRenderer({ canvas: canvas3d, antialias: true });
+  renderer = new THREE.WebGLRenderer({ canvas: $('stage'), antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFShadowMap;
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x05070f);
-  scene.fog = new THREE.Fog(0x05070f, 22, 52);
+  scene.fog = new THREE.Fog(0x05070f, 24, 54);
   camera = new THREE.PerspectiveCamera(50, 1, 0.1, 200);
-
   hemi = new THREE.HemisphereLight(0x9fb4ff, 0x1c2a1c, 0.3); scene.add(hemi);
-  moonLight = new THREE.DirectionalLight(0xd2ddff, 0.6);
-  moonLight.position.set(-14, 22, -10);
-  moonLight.castShadow = true;
-  moonLight.shadow.mapSize.set(1024, 1024);
+  moonLight = new THREE.DirectionalLight(0xd2ddff, 0.6); moonLight.position.set(-14, 22, -10);
+  moonLight.castShadow = true; moonLight.shadow.mapSize.set(1024, 1024);
   var sc = moonLight.shadow.camera; sc.left = -28; sc.right = 28; sc.top = 28; sc.bottom = -28; sc.near = 1; sc.far = 70;
   scene.add(moonLight); scene.add(moonLight.target);
 
-  coneGeo = new THREE.CircleGeometry(CONE_LEN, 20, -CONE_HALF, CONE_HALF * 2);
-  coneGeo.rotateX(-PI / 2);
+  coneGeo = new THREE.CircleGeometry(CONE_LEN, 20, -CONE_HALF, CONE_HALF * 2); coneGeo.rotateX(-PI / 2);
   coneMat = new THREE.MeshBasicMaterial({ color: 0xffc766, transparent: true, opacity: 0.32, depthWrite: false, blending: THREE.AdditiveBlending });
   ringGeo = new THREE.RingGeometry(0.94, 1, 64); ringGeo.rotateX(-PI / 2);
-  ringMat = new THREE.MeshBasicMaterial({ color: 0xdfe6ff, transparent: true, opacity: 0.35, depthWrite: false });
+  ringMat = new THREE.MeshBasicMaterial({ color: 0xdfe6ff, transparent: true, opacity: 0.4, depthWrite: false });
 
-  // 地面
-  var groundTex = canvasTexture(256, 256, function (ctx, w, h) {
+  var groundTex = canvasTex(256, 256, function (ctx, w, h) {
     ctx.fillStyle = '#35553a'; ctx.fillRect(0, 0, w, h);
-    for (var i = 0; i < 900; i++) {
-      ctx.fillStyle = Math.random() < 0.5 ? 'rgba(20,40,22,0.5)' : 'rgba(80,110,70,0.35)';
-      ctx.fillRect(Math.random() * w, Math.random() * h, 2, 3);
-    }
+    for (var i = 0; i < 900; i++) { ctx.fillStyle = i % 2 ? 'rgba(20,40,22,0.5)' : 'rgba(80,110,70,0.35)'; ctx.fillRect((i * 71.3) % w, (i * 37.9) % h, 2, 3); }
   });
   groundTex.wrapS = groundTex.wrapT = THREE.RepeatWrapping; groundTex.repeat.set(10, 10);
-  var ground = new THREE.Mesh(new THREE.PlaneGeometry(70, 70), lam(0xffffff, { map: groundTex }));
-  ground.rotation.x = -PI / 2; ground.receiveShadow = true; scene.add(ground);
+  var ground = new THREE.Mesh(new THREE.PlaneGeometry(70, 70), lam(0xffffff, { map: groundTex })); ground.rotation.x = -PI / 2; ground.receiveShadow = true; scene.add(ground);
 
-  // 稻田
-  var paddyTex = canvasTexture(64, 64, function (ctx, w, h) {
-    ctx.fillStyle = '#2f5b4a'; ctx.fillRect(0, 0, w, h);
-    ctx.fillStyle = '#5f8f4f';
-    for (var y = 2; y < h; y += 8) for (var x = 2; x < w; x += 8) ctx.fillRect(x, y, 3, 3);
-  });
+  var paddyTex = canvasTex(64, 64, function (ctx, w, h) { ctx.fillStyle = '#2f5b4a'; ctx.fillRect(0, 0, w, h); ctx.fillStyle = '#5f8f4f'; for (var y = 2; y < h; y += 8) for (var x = 2; x < w; x += 8) ctx.fillRect(x, y, 3, 3); });
   paddyTex.wrapS = paddyTex.wrapT = THREE.RepeatWrapping; paddyTex.repeat.set(3, 2);
-  var paddies = [[-8, -9, 8, 6], [9, -10, 7, 7], [-6, 4, 7, 5], [9, 7, 6, 5]];
+  var paddies = [[-8, -11, 8, 6], [9, -12, 7, 6], [-6, 5, 7, 5], [9, 7, 6, 5]];
   for (var p = 0; p < paddies.length; p++) {
     var pd = new THREE.Mesh(new THREE.PlaneGeometry(paddies[p][2], paddies[p][3]), lam(0xffffff, { map: paddyTex }));
     pd.rotation.x = -PI / 2; pd.position.set(paddies[p][0], 0.02, paddies[p][1]); pd.receiveShadow = true; scene.add(pd);
   }
-  // 田埂小路
-  var path = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 40), lam(0x5d4b35));
-  path.rotation.x = -PI / 2; path.position.set(0.5, 0.015, -2); path.receiveShadow = true; scene.add(path);
+  var path = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 40), lam(0x5d4b35)); path.rotation.x = -PI / 2; path.position.set(0.5, 0.015, -2); path.receiveShadow = true; scene.add(path);
 
-  // 竹林（起點與終點）
+  // 水圳與小橋
+  var water = new THREE.Mesh(new THREE.PlaneGeometry(50, DITCH_HALF * 2), new THREE.MeshPhongMaterial({ color: 0x1f4a5e, shininess: 90, specular: 0x8899bb }));
+  water.rotation.x = -PI / 2; water.position.set(0, 0.03, DITCH_Z); scene.add(water);
+  var bridge = new THREE.Mesh(new THREE.BoxGeometry(BRIDGE_X1 - BRIDGE_X0, 0.12, DITCH_HALF * 2 + 0.6), lam(0x7a6a55));
+  bridge.position.set((BRIDGE_X0 + BRIDGE_X1) / 2, 0.08, DITCH_Z); bridge.receiveShadow = true; scene.add(bridge);
+
   var bambooMat = lam(0x4f8a3c), leafMat = lam(0x2f6a33);
   for (var i = 0; i < 70; i++) {
-    var bx = -24 + Math.random() * 48, bz = 19.5 + Math.random() * 6;
+    var bx = -24 + ((i * 17.31) % 48), bz = 19.5 + ((i * 7.7) % 6);
     if (Math.abs(bx) < 2.6 && bz < 22) continue;
-    var hgt = 4 + Math.random() * 3;
-    var stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, hgt, 5), bambooMat);
-    stalk.position.set(bx, hgt / 2, bz); stalk.rotation.z = (Math.random() - 0.5) * 0.15; stalk.castShadow = true; scene.add(stalk);
-    if (i % 3 === 0) {
-      var lf = new THREE.Mesh(new THREE.IcosahedronGeometry(0.9, 0), leafMat);
-      lf.position.set(bx, hgt - 0.3, bz); lf.scale.set(1, 0.5, 1); scene.add(lf);
-    }
+    var hgt = 4 + (i % 4) * 0.8;
+    var stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, hgt, 5), bambooMat); stalk.position.set(bx, hgt / 2, bz); stalk.rotation.z = ((i % 5) - 2) * 0.04; stalk.castShadow = true; scene.add(stalk);
+    if (i % 3 === 0) { var lf = new THREE.Mesh(new THREE.IcosahedronGeometry(0.9, 0), leafMat); lf.position.set(bx, hgt - 0.3, bz); lf.scale.set(1, 0.5, 1); scene.add(lf); }
   }
-  exitRing = new THREE.Mesh(new THREE.RingGeometry(1.8, 2.2, 40), new THREE.MeshBasicMaterial({ color: 0x8fd694, transparent: true, opacity: 0.6, depthWrite: false }));
+  exitRing = new THREE.Mesh(new THREE.RingGeometry(1.8, 2.25, 40), new THREE.MeshBasicMaterial({ color: 0x8fd694, transparent: true, opacity: 0.6, depthWrite: false }));
   exitRing.rotation.x = -PI / 2; exitRing.position.set(0, 0.05, 18); scene.add(exitRing);
 
-  // 樹
   var trunkMat = lam(0x4b3622), crownMat = lam(0x24502c);
   for (var t = 0; t < TREE_POS.length; t++) {
     var tg = new THREE.Group();
-    var trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.3, 2.2, 6), trunkMat);
-    trunk.position.y = 1.1; trunk.castShadow = true; tg.add(trunk);
-    var crown = new THREE.Mesh(new THREE.IcosahedronGeometry(1.6, 0), crownMat);
-    crown.position.y = 3; crown.castShadow = true; tg.add(crown);
+    var trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.3, 2.2, 6), trunkMat); trunk.position.y = 1.1; trunk.castShadow = true; tg.add(trunk);
+    var crown = new THREE.Mesh(new THREE.IcosahedronGeometry(1.6, 0), crownMat); crown.position.y = 3; crown.castShadow = true; tg.add(crown);
     tg.position.set(TREE_POS[t][0], 0, TREE_POS[t][1]); scene.add(tg);
     trees.push({ x: TREE_POS[t][0], z: TREE_POS[t][1], r: 0.7 });
   }
-  // 草叢（可以躲）
   var bushMat = lam(0x1f4d2b);
   for (var b = 0; b < BUSH_POS.length; b++) {
     var bg = new THREE.Group();
-    for (var k = 0; k < 3; k++) {
-      var blob = new THREE.Mesh(new THREE.DodecahedronGeometry(0.75 + Math.random() * 0.3, 0), bushMat);
-      blob.position.set((k - 1) * 0.6, 0.55, (Math.random() - 0.5) * 0.6);
-      blob.scale.y = 0.75; blob.castShadow = true; bg.add(blob);
-    }
+    for (var k = 0; k < 3; k++) { var blob = new THREE.Mesh(new THREE.DodecahedronGeometry(0.8 + (k % 2) * 0.2, 0), bushMat); blob.position.set((k - 1) * 0.6, 0.55, ((k * 7) % 3 - 1) * 0.25); blob.scale.y = 0.75; blob.castShadow = true; bg.add(blob); }
     bg.position.set(BUSH_POS[b][0], 0, BUSH_POS[b][1]); scene.add(bg);
     bushes.push({ x: BUSH_POS[b][0], z: BUSH_POS[b][1], r: 1.35 });
   }
-  // 農舍
   var house = new THREE.Group();
-  var wall = new THREE.Mesh(new THREE.BoxGeometry(5, 2.6, 3.6), lam(0x9a8f7c));
-  wall.position.y = 1.3; wall.castShadow = true; house.add(wall);
-  var roof = new THREE.Mesh(new THREE.ConeGeometry(3.9, 1.6, 4), lam(0x7a3b2c));
-  roof.position.y = 3.4; roof.rotation.y = PI / 4; roof.scale.z = 0.75; roof.castShadow = true; house.add(roof);
-  var win = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.7), new THREE.MeshBasicMaterial({ color: 0xffc766 }));
-  win.position.set(0, 1.5, 1.81); house.add(win);
+  var wall = new THREE.Mesh(new THREE.BoxGeometry(5, 2.6, 3.6), lam(0x9a8f7c)); wall.position.y = 1.3; wall.castShadow = true; house.add(wall);
+  var roof = new THREE.Mesh(new THREE.ConeGeometry(3.9, 1.6, 4), lam(0x7a3b2c)); roof.position.y = 3.4; roof.rotation.y = PI / 4; roof.scale.z = 0.75; roof.castShadow = true; house.add(roof);
+  var win = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.7), new THREE.MeshBasicMaterial({ color: 0xffc766 })); win.position.set(0, 1.5, 1.81); house.add(win);
   house.position.set(-18, 0, -18); house.rotation.y = 0.5; scene.add(house);
   trees.push({ x: -18, z: -18, r: 3 });
-  // 圍籬
+  var kennel = new THREE.Group();
+  var kb = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.9, 1.2), lam(0x8a6a44)); kb.position.y = 0.45; kb.castShadow = true; kennel.add(kb);
+  var kr = new THREE.Mesh(new THREE.ConeGeometry(1.0, 0.6, 4), lam(0x6a3a2a)); kr.position.y = 1.2; kr.rotation.y = PI / 4; kennel.add(kr);
+  kennel.position.set(kennelPos.x - 1.4, 0, kennelPos.z - 0.6); scene.add(kennel);
   var postMat = lam(0x5a4632);
   for (var f = -24; f <= 24; f += 3) {
     var p1 = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.9, 0.15), postMat); p1.position.set(f, 0.45, -24); scene.add(p1);
     var p2 = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.9, 0.15), postMat); p2.position.set(-24, 0.45, f); scene.add(p2);
     var p3 = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.9, 0.15), postMat); p3.position.set(24, 0.45, f); scene.add(p3);
   }
+  // 螢火蟲：越暗越明顯
+  var ffGeo = new THREE.BufferGeometry(), ffPos = new Float32Array(40 * 3);
+  for (var q = 0; q < 40; q++) { ffPos[q * 3] = -20 + ((q * 13.7) % 40); ffPos[q * 3 + 1] = 0.6 + (q % 5) * 0.3; ffPos[q * 3 + 2] = -20 + ((q * 29.3) % 38); }
+  ffGeo.setAttribute('position', new THREE.BufferAttribute(ffPos, 3));
+  var ffTex = canvasTex(32, 32, function (ctx) { var gr = ctx.createRadialGradient(16, 16, 0, 16, 16, 16); gr.addColorStop(0, 'rgba(230,255,140,1)'); gr.addColorStop(1, 'rgba(230,255,140,0)'); ctx.fillStyle = gr; ctx.fillRect(0, 0, 32, 32); });
+  fireflies = new THREE.Points(ffGeo, new THREE.PointsMaterial({ size: 0.5, map: ffTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+  fireflies.userData.base = ffPos.slice(0);
+  scene.add(fireflies);
 
   player = makeShihu(); scene.add(player);
-  nightVision = new THREE.PointLight(0xfff0d0, 1.1, 11, 1.4);
-  nightVision.position.set(0, 2.2, 0); player.add(nightVision);
+  nightVision = new THREE.PointLight(0xfff0d0, 1.1, 11, 1.4); nightVision.position.set(0, 2.2, 0); player.add(nightVision);
   player.position.set(0, 0, 17);
-
-  setNight(0.02);
+  dogObj = makeDog(); dogObj.position.set(kennelPos.x, 0, kennelPos.z); dogObj.visible = false; scene.add(dogObj);
+  setNight(0.3);
   onResize();
 }
-
 function setNight(b) {
   hemi.intensity = 0.16 + 0.45 * b;
   moonLight.intensity = 0.02 + 0.95 * b;
   moonLight.castShadow = b > 0.12;
-  var dark = new THREE.Color(0x04060d), lit = new THREE.Color(0x24375e);
-  var col = dark.clone().lerp(lit, b);
-  scene.background.copy(col);
-  scene.fog.color.copy(col);
+  var col = new THREE.Color(0x04060d).lerp(new THREE.Color(0x24375e), b);
+  scene.background.copy(col); scene.fog.color.copy(col);
+  if (fireflies) fireflies.material.opacity = 0.95 * (1 - b);
 }
-
 function onResize() {
   var w = window.innerWidth, h = window.innerHeight;
-  renderer.setSize(w, h, false);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
 }
-window.addEventListener('resize', function () { if (renderer) onResize(); });
+window.addEventListener('resize', function () { if (renderer) onResize(); if (boardMode === 'plan') drawString(); });
 
-/* ========== 輸入 ========== */
-var keys = {};
-var joyVec = { x: 0, y: 0 };
-var isTouch = false;
+/* ================= 輸入 ================= */
+var keys = {}, joyVec = { x: 0, y: 0 }, isTouch = false;
 try { isTouch = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window); } catch (e) {}
 window.addEventListener('keydown', function (e) {
-  var k = e.key;
-  keys[k.toLowerCase()] = true;
-  if (G.mode === 'sneak' && (k === 'ArrowUp' || k === 'ArrowDown' || k === 'ArrowLeft' || k === 'ArrowRight' || k === ' ')) e.preventDefault();
+  keys[e.key.toLowerCase()] = true;
+  if (R && !R.ended && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].indexOf(e.key) >= 0) e.preventDefault();
+  if (e.key === 'Escape' && !$('sheetLayer').hidden && sheetClosable) closeSheet();
 });
 window.addEventListener('keyup', function (e) { keys[e.key.toLowerCase()] = false; });
 window.addEventListener('blur', function () { keys = {}; });
-(function setupJoy() {
+(function () {
   var joy = $('joy'), knob = $('joyKnob'), active = null;
-  function move(e) {
-    var r = joy.getBoundingClientRect();
-    var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    var dx = e.clientX - cx, dy = e.clientY - cy;
-    var max = r.width / 2 - 10;
-    var d = Math.sqrt(dx * dx + dy * dy);
+  function mv(e) {
+    var r = joy.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2), max = r.width / 2 - 10, d = Math.sqrt(dx * dx + dy * dy);
     if (d > max) { dx = dx / d * max; dy = dy / d * max; }
-    knob.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
-    joyVec.x = dx / max; joyVec.y = dy / max;
+    knob.style.transform = 'translate(' + dx + 'px,' + dy + 'px)'; joyVec.x = dx / max; joyVec.y = dy / max;
   }
-  joy.addEventListener('pointerdown', function (e) { active = e.pointerId; joy.setPointerCapture(e.pointerId); move(e); e.preventDefault(); });
-  joy.addEventListener('pointermove', function (e) { if (active === e.pointerId) move(e); });
+  joy.addEventListener('pointerdown', function (e) { active = e.pointerId; joy.setPointerCapture(e.pointerId); mv(e); e.preventDefault(); });
+  joy.addEventListener('pointermove', function (e) { if (active === e.pointerId) mv(e); });
   function end(e) { if (active !== e.pointerId) return; active = null; joyVec.x = 0; joyVec.y = 0; knob.style.transform = ''; }
-  joy.addEventListener('pointerup', end);
-  joy.addEventListener('pointercancel', end);
+  joy.addEventListener('pointerup', end); joy.addEventListener('pointercancel', end);
 })();
-window.addEventListener('touchstart', function () { if (!isTouch) { isTouch = true; if (G.mode === 'sneak') $('joy').hidden = false; } }, { passive: true });
+window.addEventListener('touchstart', function () { if (!isTouch) { isTouch = true; if (R && !R.ended) $('joy').hidden = false; } }, { passive: true });
 
-/* ========== 遊戲狀態 ========== */
-var G = {
-  mode: 'title', level: null, run: null,
-  meter: 0, collected: 0, need: 0, hidden: false, t: 0, done: false
-};
-var LV = {
-  1: { title: '收集月相卡片', farmers: 1, helper: true },
-  2: { title: '看月亮，找新月', clueType: 'moon', days: [8, 15], mice: 4, farmers: 2, helper: true },
-  3: { title: '看農曆，找新月', clueType: 'lunar', days: [10, 18, 5], mice: 4, farmers: 2, helper: true },
-  4: { title: '上弦？下弦？', clueType: 'moon', days: [22, 25], mice: 5, farmers: 3, helper: false },
-  5: { title: '月亮什麼時候出來', mice: 3, farmers: 2, helper: true }
-};
+/* ================= 夜間行動 ================= */
+var HOUR_SEC = 25, RUN_HOURS = 3;
+var R = null;
+var paused = false;
+var DEPARTS = [{ h: 19, t: '晚上 7 點', s: '前半夜' }, { h: 23, t: '晚上 11 點', s: '半夜' }, { h: 26, t: '凌晨 2 點', s: '後半夜' }];
+function departLabel(h) { for (var i = 0; i < DEPARTS.length; i++) if (DEPARTS[i].h === h) return DEPARTS[i].t; return ''; }
 
-function startSneak(cfg) {
-  G.run = cfg;
-  G.mode = 'sneak'; G.meter = 0; G.collected = 0; G.done = false; G.t = 0; G.hidden = false;
-  setNight(cfg.b);
-  // 清除舊物件
+function startRun(depH) {
+  audioInit();
+  var ld = tonightLD();
+  var b0 = brightAt(ld, depH + 0.5);
+  var nMice = 3 + Math.round(5 * (1 - Math.min(1, b0 * 1.3)));
+  R = { ld: ld, h0: depH, t: 0, got: 0, ended: false, meter: 0, hidden: false, inWater: false, trail: [], trailT: 0, lastUp: null, cause: '', bannerT: 0, spotSfxT: 0, barkT: 0, curB: 0 };
   var i;
   for (i = 0; i < farmers.length; i++) scene.remove(farmers[i].obj);
-  for (i = 0; i < targets.length; i++) scene.remove(targets[i].obj);
-  farmers = []; targets = [];
+  for (i = 0; i < mice.length; i++) scene.remove(mice[i].obj);
+  farmers = []; mice = [];
   player.position.set(0, 0, 17); player.rotation.y = 0;
-  // 巡田農夫
-  var visR = 1.2 + 12 * cfg.b;
-  for (i = 0; i < cfg.farmers; i++) {
-    var rt = ROUTES[i];
-    var obj = makeFarmer();
-    obj.position.set(rt.pts[0][0], 0, rt.pts[0][1]);
-    obj.userData.ring.scale.set(visR, 1, visR);
-    scene.add(obj);
-    farmers.push({ obj: obj, route: rt, wp: 1, wait: 0, yaw: 0, phase: Math.random() * 6, speed: rt.speed * (cfg.slow ? 0.6 : 1), visR: visR });
+  var nF = guardCount();
+  for (i = 0; i < nF; i++) {
+    var rt = ROUTES[i], fo = makeFarmer();
+    fo.position.set(rt.pts[0][0], 0, rt.pts[0][1]); scene.add(fo);
+    farmers.push({ obj: fo, route: rt, wp: 1, wait: 0, yaw: 0, phase: i * 2.1, speed: rt.speed * (1 + 0.04 * C.raids), visR: 1 });
   }
-  // 目標
-  if (cfg.cards) {
-    var order = shuffle([0, 1, 2, 3, 4, 5, 6, 7]);
-    var spots = shuffle(MICE_POS.slice()).slice(0, 8);
-    for (i = 0; i < 8; i++) {
-      var c = makeCard(order[i]);
-      c.position.set(spots[i][0], 0, spots[i][1]);
-      scene.add(c);
-      targets.push({ obj: c, x: spots[i][0], z: spots[i][1], got: false, idx: order[i] });
-    }
-    G.need = 8;
-  } else {
-    var ms = shuffle(MICE_POS.slice()).slice(0, cfg.mice);
-    for (i = 0; i < ms.length; i++) {
-      var m = makeMouse();
-      m.position.set(ms[i][0], 0, ms[i][1]);
-      scene.add(m);
-      targets.push({ obj: m, x: ms[i][0], z: ms[i][1], got: false, ph: Math.random() * 6 });
-    }
-    G.need = ms.length;
+  var spots = shuffle(MICE_POS.slice()).slice(0, nMice);
+  for (i = 0; i < spots.length; i++) { var m = makeMouse(); m.position.set(spots[i][0], 0, spots[i][1]); scene.add(m); mice.push({ obj: m, x: spots[i][0], z: spots[i][1], ph: i * 1.7, got: false }); }
+  var dogOn = dogActive();
+  dogObj.visible = dogOn;
+  dogObj.position.set(kennelPos.x, 0, kennelPos.z);
+  dogObj.userData.bub.visible = false; dogObj.userData.q.visible = false;
+  R.dog = dogOn ? { st: 'sleep', idx: 0, t: 0, cool: 10 + Math.random() * 4 } : null;
+  R.total = nMice;
+  $('hudGot').textContent = '0 / ' + nMice;
+  $('board').hidden = true; $('hud').hidden = false; $('joy').hidden = !isTouch;
+  $('burst').hidden = true; $('banner').hidden = true; $('hudMeter').style.width = '0%';
+  boardMode = 'run'; paused = false;
+  updateRunLight(true);
+  drawHudSky();
+  setTip('抓田鼠，再回到竹林的綠圈');
+  musicStart();
+  showBanner('農曆' + lunarName(ld) + '，' + departLabel(depH) + '，行動開始！');
+}
+function nowHour() { return R.h0 + R.t / HOUR_SEC; }
+function updateRunLight(first) {
+  var h = nowHour(), b = brightAt(R.ld, h), m = moonAt(R.ld, h);
+  setNight(b);
+  var visR = 1.2 + 11 * b;
+  for (var i = 0; i < farmers.length; i++) { farmers[i].visR = visR; farmers[i].obj.userData.ring.scale.set(visR, 1, visR); farmers[i].obj.userData.ring.visible = b > 0.03; }
+  var up = m.up && illum(angleOf(R.ld)) > 0.04;
+  if (!first && R.lastUp !== null && up !== R.lastUp) {
+    if (up) { showBanner('月亮升起來了！田裡變亮了'); SFX.shimmer(); }
+    else showBanner('月亮下山了，田裡變暗了！');
   }
-  exitRing.visible = false;
-  // HUD
-  $('hudLevel').textContent = '第 ' + G.level + ' 關';
-  updateCount();
-  drawSky(cfg.skyAngle, cfg.moonUp);
-  $('hudHelp').disabled = !LV[G.level].helper;
-  $('hudHelp').textContent = LV[G.level].helper ? '月相小幫手' : '這關不能用小幫手';
-  hidePanel();
-  setHud(true);
-  setTip(cfg.cards ? '找到發光的月相卡片，避開手電筒！' : '抓到田鼠，避開手電筒，躲進草叢！');
+  R.lastUp = up;
+  R.curB = b;
 }
-function setTip(t, cls) { var tp = $('hudTip'); tp.textContent = t; tp.className = cls || ''; }
-function updateCount() {
-  var noun = G.run && G.run.cards ? '卡片' : '田鼠';
-  $('hudCount').textContent = noun + ' ' + G.collected + '/' + G.need;
-}
-function drawSky(angle, up) {
-  var c = $('hudSkyCanvas');
-  c.width = 56 * DPR; c.height = 56 * DPR;
-  var ctx = c.getContext('2d');
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  ctx.fillStyle = '#060a18'; ctx.fillRect(0, 0, 56, 56);
-  ctx.fillStyle = 'rgba(255,255,255,0.7)';
-  var st = [[8, 10], [45, 8], [30, 46], [12, 40], [48, 38], [22, 20]];
-  for (var i = 0; i < st.length; i++) ctx.fillRect(st[i][0], st[i][1], 1.2, 1.2);
-  var il = illumOf(angle);
+function showBanner(t) { var b = $('banner'); b.textContent = t; b.hidden = false; R.bannerT = 2.8; }
+function setTip(t) { $('hudTip').textContent = t; }
+function drawHudSky() {
+  var c = $('hudSkyCanvas'), w = 120, h = 66;
+  c.width = w * DPR; c.height = h * DPR; c.style.width = w + 'px'; c.style.height = h + 'px';
+  var hr = nowHour();
+  skyPhoto(c, w, h, R.ld, hr);
+  var m = moonAt(R.ld, hr), il = illum(angleOf(R.ld));
   var txt;
-  if (!up) txt = '月亮還在地平線下，看不到';
-  else if (il < 0.03) txt = '新月：看不到月亮';
-  else { drawMoon(ctx, 28, 28, 18, angle, { glow: true, darkColor: '#141a30' }); txt = '今晚的月亮'; }
+  if (il < 0.04) txt = '新月前後：看不到月亮';
+  else if (m.up) txt = '月亮在天上';
+  else txt = m.x >= 18 ? '月亮還沒升起' : '月亮已經下山';
   $('hudSkyText').textContent = txt;
 }
 
 function update(dt) {
-  G.t += dt;
-  var i;
-  // 目標動畫
-  for (i = 0; i < targets.length; i++) {
-    var tg = targets[i];
-    if (tg.got) continue;
-    if (G.run.cards) {
-      tg.obj.userData.card.rotation.y += dt * 1.2;
-      tg.obj.userData.card.position.y = 1.1 + Math.sin(G.t * 2 + i) * 0.12;
-    } else {
-      tg.ph += dt * 0.8;
-      tg.obj.position.x = tg.x + Math.cos(tg.ph) * 0.8;
-      tg.obj.position.z = tg.z + Math.sin(tg.ph) * 0.8;
-      tg.obj.rotation.y = -tg.ph + PI;
-    }
+  if (!R) return;
+  var i, t = performance.now() / 1000;
+  for (i = 0; i < mice.length; i++) {
+    var ms = mice[i]; if (ms.got) continue;
+    ms.ph += dt * 0.8; ms.obj.position.x = ms.x + Math.cos(ms.ph) * 0.8; ms.obj.position.z = ms.z + Math.sin(ms.ph) * 0.8; ms.obj.rotation.y = -ms.ph + PI;
   }
-  exitRing.material.opacity = 0.4 + 0.3 * Math.sin(G.t * 4);
-  if (G.mode !== 'sneak' || G.done) return;
+  var fp = fireflies.geometry.attributes.position, base = fireflies.userData.base;
+  for (i = 0; i < 40; i++) { fp.array[i * 3] = base[i * 3] + Math.sin(t * 0.7 + i) * 0.8; fp.array[i * 3 + 1] = base[i * 3 + 1] + Math.sin(t * 1.3 + i * 2) * 0.3; fp.array[i * 3 + 2] = base[i * 3 + 2] + Math.cos(t * 0.5 + i) * 0.8; }
+  fp.needsUpdate = true;
+  exitRing.material.opacity = 0.4 + 0.3 * Math.sin(t * 4);
+  if (R.ended || paused) return;
 
-  // 玩家移動（畫面向上 = 往前）
+  R.t += dt;
+  if (R.bannerT > 0) { R.bannerT -= dt; if (R.bannerT <= 0) $('banner').hidden = true; }
+  var h = nowHour();
+  if (Math.floor(R.t * 2) !== Math.floor((R.t - dt) * 2)) { updateRunLight(false); drawHudSky(); }
+  $('hudTime').textContent = clockText(h);
+  var left = R.h0 + RUN_HOURS - h;
+  $('hudLeft').textContent = left > 1 ? '還有 ' + Math.ceil(left) + ' 小時' : '快回家！剩 ' + Math.max(0, Math.ceil(left * 60)) + ' 分鐘';
+  if (left <= 0) { endRun('time'); return; }
+
+  // 石虎
   var mx = 0, mz = 0;
-  if (keys['arrowleft'] || keys['a']) mx -= 1;
-  if (keys['arrowright'] || keys['d']) mx += 1;
-  if (keys['arrowup'] || keys['w']) mz -= 1;
-  if (keys['arrowdown'] || keys['s']) mz += 1;
+  if (keys.arrowleft || keys.a) mx -= 1;
+  if (keys.arrowright || keys.d) mx += 1;
+  if (keys.arrowup || keys.w) mz -= 1;
+  if (keys.arrowdown || keys.s) mz += 1;
   mx += joyVec.x; mz += joyVec.y;
-  var len = Math.sqrt(mx * mx + mz * mz);
-  var moving = len > 0.15;
+  var len = Math.sqrt(mx * mx + mz * mz), moving = len > 0.15;
   if (len > 1) { mx /= len; mz /= len; }
-  var sp = 4.4;
   var p = player.position;
+  var inWater = Math.abs(p.z - DITCH_Z) < DITCH_HALF && !(p.x > BRIDGE_X0 && p.x < BRIDGE_X1);
+  var sp = inWater ? 2.4 : 4.4;
   if (moving) {
     p.x += mx * sp * dt; p.z += mz * sp * dt;
-    var targetYaw = Math.atan2(-mx, -mz);
-    var dy = targetYaw - player.rotation.y;
-    while (dy > PI) dy -= PI * 2;
-    while (dy < -PI) dy += PI * 2;
+    var dy = Math.atan2(-mx, -mz) - player.rotation.y;
+    while (dy > PI) dy -= PI * 2; while (dy < -PI) dy += PI * 2;
     player.rotation.y += dy * Math.min(1, dt * 12);
   }
   p.x = clamp(p.x, -23, 23); p.z = clamp(p.z, -23, 19);
   for (i = 0; i < trees.length; i++) {
-    var tdx = p.x - trees[i].x, tdz = p.z - trees[i].z, td = Math.sqrt(tdx * tdx + tdz * tdz);
-    if (td < trees[i].r + 0.4 && td > 0.001) { var push = (trees[i].r + 0.4) / td; p.x = trees[i].x + tdx * push; p.z = trees[i].z + tdz * push; }
+    var tx = p.x - trees[i].x, tz = p.z - trees[i].z, td = Math.sqrt(tx * tx + tz * tz);
+    if (td < trees[i].r + 0.4 && td > 0.001) { var k = (trees[i].r + 0.4) / td; p.x = trees[i].x + tx * k; p.z = trees[i].z + tz * k; }
   }
+  p.y = inWater ? -0.25 : 0;
   var legs = player.userData.legs;
-  for (i = 0; i < 4; i++) legs[i].rotation.x = moving ? Math.sin(G.t * 14 + (i % 2 === 0 ? 0 : PI) + (i > 1 ? PI : 0)) * 0.6 : 0;
+  for (i = 0; i < 4; i++) legs[i].rotation.x = moving ? Math.sin(t * 14 + (i % 2 ? PI : 0) + (i > 1 ? PI : 0)) * 0.6 : 0;
 
-  // 躲在草叢裡？
+  // 氣味與水圳
+  if (inWater && !R.inWater) {
+    SFX.splash();
+    if (R.trail.length) { R.trail = []; if (R.dog) R.dog.idx = 0; if (R.dog && R.dog.st === 'track') { R.dog.st = 'lost'; R.dog.t = 3; } }
+    setTip('在水圳裡，氣味斷了！');
+  }
+  if (!inWater && R.inWater) setTip('抓田鼠，再回到竹林的綠圈');
+  R.inWater = inWater;
+  if (!inWater && moving) {
+    R.trailT += dt;
+    if (R.trailT > 0.35) { R.trailT = 0; R.trail.push({ x: p.x, z: p.z, t: R.t }); }
+  }
+  while (R.trail.length && R.t - R.trail[0].t > 30) { R.trail.shift(); if (R.dog && R.dog.idx > 0) R.dog.idx--; }
+
+  // 草叢
   var hid = false;
-  for (i = 0; i < bushes.length; i++) {
-    var bx = p.x - bushes[i].x, bz = p.z - bushes[i].z;
-    if (bx * bx + bz * bz < bushes[i].r * bushes[i].r) { hid = true; break; }
-  }
-  if (hid !== G.hidden) {
-    G.hidden = hid;
-    if (hid) setTip('躲在草叢裡，月光照不到你', 'hide-tip');
-    else setTip(G.collected >= G.need ? '快回到竹林！' : (G.run.cards ? '找到發光的月相卡片，避開手電筒！' : '抓到田鼠，避開手電筒，躲進草叢！'));
-  }
+  for (i = 0; i < bushes.length; i++) { var bx = p.x - bushes[i].x, bz = p.z - bushes[i].z; if (bx * bx + bz * bz < bushes[i].r * bushes[i].r) { hid = true; break; } }
+  if (hid !== R.hidden) { R.hidden = hid; if (!inWater) setTip(hid ? '躲在草叢裡，月光照不到你' : '抓田鼠，再回到竹林的綠圈'); }
 
-  // 抓田鼠 / 撿卡片
-  for (i = 0; i < targets.length; i++) {
-    var tg2 = targets[i];
-    if (tg2.got) continue;
-    var ox = p.x - tg2.obj.position.x, oz = p.z - tg2.obj.position.z;
-    if (ox * ox + oz * oz < 1.1) {
-      tg2.got = true; tg2.obj.visible = false; G.collected++;
-      updateCount();
-      if (G.collected >= G.need) { exitRing.visible = true; setTip('全部到手！快回到竹林（綠色圓圈）'); }
-    }
+  // 抓田鼠
+  for (i = 0; i < mice.length; i++) {
+    var mo = mice[i]; if (mo.got) continue;
+    var ox = p.x - mo.obj.position.x, oz = p.z - mo.obj.position.z;
+    if (ox * ox + oz * oz < 1.1) { mo.got = true; mo.obj.visible = false; R.got++; SFX.pick(); $('hudGot').textContent = R.got + ' / ' + R.total; }
   }
-  if (G.collected >= G.need && p.z > 16 && Math.abs(p.x) < 3) { endSneak(true); return; }
+  if (p.z > 16 && Math.abs(p.x) < 3 && R.t > 2) { endRun('home'); return; }
 
-  // 農夫巡邏與偵測
-  var rate = 0;
+  // 巡田農夫
+  var rate = 0, top = '', topRate = 0;
   for (i = 0; i < farmers.length; i++) {
-    var f = farmers[i], fo = f.obj, rt = f.route.pts;
-    var tgt = rt[f.wp];
-    var fx = tgt[0] - fo.position.x, fz = tgt[1] - fo.position.z, fd = Math.sqrt(fx * fx + fz * fz);
-    if (f.wait > 0) {
-      f.wait -= dt;
-    } else if (fd < 0.2) {
-      f.wp = (f.wp + 1) % rt.length; f.wait = 1.2;
-    } else {
+    var f = farmers[i], fo = f.obj, tg = f.route.pts[f.wp];
+    var fx = tg[0] - fo.position.x, fz = tg[1] - fo.position.z, fd = Math.sqrt(fx * fx + fz * fz);
+    if (f.wait > 0) f.wait -= dt;
+    else if (fd < 0.2) { f.wp = (f.wp + 1) % f.route.pts.length; f.wait = 1.2; }
+    else {
       fo.position.x += fx / fd * f.speed * dt; fo.position.z += fz / fd * f.speed * dt;
-      var want = Math.atan2(-fz, fx);
-      var dd = want - f.yaw;
-      while (dd > PI) dd -= PI * 2;
-      while (dd < -PI) dd += PI * 2;
+      var dd = Math.atan2(-fz, fx) - f.yaw; while (dd > PI) dd -= PI * 2; while (dd < -PI) dd += PI * 2;
       f.yaw += dd * Math.min(1, dt * 3);
     }
     fo.rotation.y = f.yaw;
-    var sw = Math.sin(G.t * (f.wait > 0 ? 2.2 : 1.1) + f.phase) * (f.wait > 0 ? 0.9 : 0.35);
+    var sw = Math.sin(t * (f.wait > 0 ? 2.2 : 1.1) + f.phase) * (f.wait > 0 ? 0.9 : 0.35);
     fo.userData.sweep.rotation.y = sw;
-    fo.position.y = Math.abs(Math.sin(G.t * 6 + f.phase)) * 0.05;
-
     var dx = p.x - fo.position.x, dz = p.z - fo.position.z, dist = Math.sqrt(dx * dx + dz * dz);
-    var look = f.yaw + sw;
-    var lx = Math.cos(look), lz = -Math.sin(look);
-    var cosAng = dist > 0.001 ? (dx * lx + dz * lz) / dist : 1;
-    var seen = 0;
-    if (dist < CONE_LEN && cosAng > Math.cos(CONE_HALF)) seen += hid ? (dist < 2.2 ? 1.6 : 0) : 2.6;
-    if (!hid && dist < f.visR) seen += 1.4 * (1 - 0.5 * dist / f.visR);
-    if (dist < 1.2) seen += 3;
-    fo.userData.alert.visible = seen > 0;
-    rate += seen;
+    var lk = f.yaw + sw, cosA = dist > 0.001 ? (dx * Math.cos(lk) - dz * Math.sin(lk)) / dist : 1;
+    var sLight = 0, sMoon = 0;
+    if (dist < CONE_LEN && cosA > Math.cos(CONE_HALF)) sLight = hid ? (dist < 2.2 ? 1.6 : 0) : 2.6;
+    if (!hid && dist < f.visR && R.curB > 0.03) sMoon = 1.4 * (1 - 0.5 * dist / f.visR);
+    if (dist < 1.2) sLight += 3;
+    fo.userData.bub.visible = sLight + sMoon > 0;
+    rate += sLight + sMoon;
+    if (sLight > topRate) { topRate = sLight; top = 'light'; }
+    if (sMoon > topRate) { topRate = sMoon; top = 'moon'; }
   }
-  if (rate > 0) G.meter += rate * dt;
-  else G.meter = Math.max(0, G.meter - 0.35 * dt);
-  $('hudMeter').style.width = Math.min(100, G.meter * 100) + '%';
-  if (G.meter >= 1) endSneak(false);
+
+  // 循氣味追蹤的狗
+  var D = R.dog;
+  if (D) {
+    var dog = dogObj, dpos = dog.position, ud = dog.userData, dspeed = 0, tgx = null, tgz = null;
+    D.t -= dt;
+    ud.tail.rotation.z = Math.sin(t * 12) * 0.5;
+    if (D.st === 'sleep') {
+      D.cool -= dt;
+      if (D.cool <= 0 && R.trail.length > 4) { D.st = 'track'; D.idx = 0; SFX.bark(); ud.bub.visible = true; D.t = 1.2; showBanner('狗醒了！牠聞到你的氣味了'); }
+    } else if (D.st === 'track') {
+      if (D.t <= 0) ud.bub.visible = false;
+      if (D.idx < R.trail.length) {
+        tgx = R.trail[D.idx].x; tgz = R.trail[D.idx].z;
+        var ax = tgx - dpos.x, az = tgz - dpos.z;
+        if (ax * ax + az * az < 0.5) D.idx++;
+      } else if (!R.inWater) { tgx = p.x; tgz = p.z; }
+      dspeed = 3.3 + 0.12 * C.raids;
+      R.barkT -= dt;
+      var pdx = p.x - dpos.x, pdz = p.z - dpos.z, pd = Math.sqrt(pdx * pdx + pdz * pdz);
+      if (pd < 6 && R.barkT <= 0) { SFX.bark(); ud.bub.visible = true; D.t = 0.8; R.barkT = 1.6; }
+      if (pd < 1.8) { rate += 3.5; if (3.5 > topRate) { topRate = 3.5; top = 'dog'; } }
+    } else if (D.st === 'lost') {
+      ud.q.visible = true; ud.bub.visible = false;
+      if (D.t <= 0) { D.st = 'home'; ud.q.visible = false; }
+    } else if (D.st === 'home') {
+      tgx = kennelPos.x; tgz = kennelPos.z; dspeed = 2.2;
+      var hx = tgx - dpos.x, hz = tgz - dpos.z;
+      if (hx * hx + hz * hz < 0.3) { D.st = 'sleep'; D.cool = 10; }
+    }
+    if (tgx !== null && dspeed > 0) {
+      var vx = tgx - dpos.x, vz = tgz - dpos.z, vd = Math.sqrt(vx * vx + vz * vz);
+      if (vd > 0.05) {
+        var stp = Math.min(vd, dspeed * dt); dpos.x += vx / vd * stp; dpos.z += vz / vd * stp;
+        dog.rotation.y = Math.atan2(-vx, -vz);
+        for (i = 0; i < 4; i++) ud.legs[i].rotation.x = Math.sin(t * 16 + (i % 2 ? PI : 0)) * 0.7;
+      }
+    } else for (i = 0; i < 4; i++) ud.legs[i].rotation.x = 0;
+  }
+
+  var wasLow = R.meter < 0.05;
+  if (rate > 0) { R.meter += rate * dt; if (top) R.cause = top; } else R.meter = Math.max(0, R.meter - 0.35 * dt);
+  R.spotSfxT -= dt;
+  if (rate > 0 && wasLow && R.spotSfxT <= 0) { SFX.spot(); R.spotSfxT = 2; }
+  $('burst').hidden = !(rate > 0);
+  $('vig').style.opacity = Math.min(0.85, R.meter);
+  $('hudMeter').style.width = Math.min(100, R.meter * 100) + '%';
+  tension = Math.min(1, R.meter);
+  if (R.meter >= 1) endRun('caught');
 }
 
 var camPos = new THREE.Vector3(0, 14, 28);
 function updateCamera(dt) {
   var portrait = window.innerHeight > window.innerWidth;
-  var tx, tz, h, back;
-  if (G.mode === 'sneak') {
-    tx = player.position.x; tz = player.position.z;
-    h = portrait ? 18 : 14; back = portrait ? 9.5 : 10.5;
-    camPos.lerp(new THREE.Vector3(tx, h, tz + back), Math.min(1, dt * 4));
-    camera.position.copy(camPos);
-    camera.lookAt(tx, 0, tz - 1.2);
-  } else {
-    var a = performance.now() * 0.00005;
-    camera.position.set(Math.sin(a) * 30, 15, Math.cos(a) * 30);
-    camera.lookAt(0, 0, 0);
-    camPos.copy(camera.position);
-  }
+  var tx = player.position.x, tz = player.position.z;
+  camPos.lerp(new THREE.Vector3(tx, portrait ? 18 : 14, tz + (portrait ? 9.5 : 10.5)), Math.min(1, dt * 4));
+  camera.position.copy(camPos); camera.lookAt(tx, 0, tz - 1.2);
 }
-
 var lastT = performance.now();
 function loop() {
   requestAnimationFrame(loop);
-  var now = performance.now();
-  var dt = Math.min(0.05, (now - lastT) / 1000);
-  lastT = now;
-  if (G.mode === 'sneak' || targets.length) update(dt);
-  updateCamera(dt);
-  renderer.render(scene, camera);
+  var now = performance.now(), dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+  if (boardMode === 'run') { update(dt); updateCamera(dt); renderer.render(scene, camera); }
 }
 
-/* ========== 關卡流程 ========== */
-function goTitle() {
-  G.mode = 'title';
-  setHud(false);
-  setNight(0.35);
-  for (var i = 0; i < farmers.length; i++) farmers[i].obj.userData.alert.visible = false;
-  showPanel(function (p) {
-    var wrap = el('div', 'title-wrap');
-    var left = el('div');
-    left.style.display = 'flex'; left.style.flexDirection = 'column'; left.style.gap = '14px';
-    left.appendChild(el('div', 'eyebrow', '四年級自然 月亮單元 複習遊戲'));
-    left.appendChild(el('h1', '', '石虎月夜行'));
-    left.appendChild(el('p', '', '石虎是臺灣的保育類野生動物。牠白天躲在竹林裡，晚上才出來抓田鼠。牠很怕被人發現，所以最喜歡<b>最暗的夜晚</b>。'));
-    left.appendChild(el('p', 'mute small', '幫石虎看懂月亮，算出哪一天最暗，再悄悄溜進田裡吧！'));
-    var go = btn(store.done[1] ? '繼續冒險' : '開始冒險', 'primary', function () {
-      var next = 1;
-      for (var k = 1; k <= 5; k++) { if (!store.done[k]) { next = k; break; } next = 5; }
-      openLevel(next);
-    });
-    var r = el('div', 'row'); r.appendChild(go);
-    r.appendChild(btn('月相小幫手', '', function () { openHelper(false); }));
-    left.appendChild(r);
-    wrap.appendChild(left);
-    var right = el('div', 'levels');
-    for (var id = 1; id <= 5; id++) {
-      (function (id) {
-        var b = el('button', 'lvl-btn' + (store.done[id] ? ' done' : ''), '<span class="num">' + id + '</span><span>' + LV[id].title + '</span>');
-        b.type = 'button';
-        b.disabled = !unlocked(id);
-        b.addEventListener('click', function () { openLevel(id); });
-        right.appendChild(b);
-      })(id);
+function endRun(how) {
+  if (R.ended) return;
+  R.ended = true;
+  musicStop(); tension = 0;
+  $('burst').hidden = true; $('vig').style.opacity = 0;
+  var kept = R.got;
+  if (how === 'caught' || how === 'time') kept = Math.floor(R.got / 2);
+  if (how === 'home') SFX.win(); else SFX.caught();
+  var entry = { ld: R.ld, raided: true, ok: how === 'home', got: kept, h0: R.h0 };
+  C.journal.push(entry);
+  C.raids++;
+  C.stock += kept;
+  save();
+  showReport(how, kept, entry);
+}
+
+/* ================= 戰報與紙條 ================= */
+var sheetClosable = false;
+function openSheet(build, wide, closable) {
+  var s = $('sheet'); s.innerHTML = ''; s.className = 'sheet paper' + (wide ? ' wide' : '');
+  build(s); $('sheetLayer').hidden = false; s.scrollTop = 0; sheetClosable = !!closable;
+  var f = s.querySelector('.btn-paper.red'); if (f) { try { f.focus({ preventScroll: true }); } catch (e) {} }
+}
+function closeSheet() { $('sheetLayer').hidden = true; }
+function pbtn(label, red, fn) { var b = el('button', 'btn-paper' + (red ? ' red' : ''), label); b.type = 'button'; on(b, 'click', fn); return b; }
+
+function nightStory(ld, h0) {
+  var ph = PH[phaseIdx(ld)], il = illum(angleOf(ld));
+  if (il < 0.04) return '今晚是<b>' + ph.n + '</b>，整晚都看不到月亮，是最暗的夜晚。';
+  var up0 = moonAt(ld, h0).up, up1 = moonAt(ld, h0 + RUN_HOURS).up;
+  var s = '今晚是<b>' + ph.n + '</b>（農曆' + lunarName(ld) + '），月亮大約<b>' + hourWord(riseHour(ld)) + '</b>升起。';
+  if (up0 && up1) s += '你出門的時候，月亮一直掛在天上。';
+  else if (!up0 && up1) s += '你出門時月亮還沒升起，後來才升上來。';
+  else if (up0 && !up1) s += '你出門時月亮還在，後來下山了。';
+  else s += '你出門的這段時間，月亮不在天上，所以很暗。';
+  return s;
+}
+function showReport(how, kept, entry) {
+  $('hud').hidden = true;
+  openSheet(function (s) {
+    var ok = how === 'home';
+    s.appendChild(el('div', 'big-stamp ' + (ok ? 'ok' : 'bad'), ok ? '得手' : (how === 'caught' ? '被發現' : '時間到')));
+    s.appendChild(el('h2', '', ok ? '平安回到竹林！' : (how === 'caught' ? '被發現了，趕快逃回竹林！' : '來不及了，小石虎在等你')));
+    s.appendChild(el('p', 'loot-line', '帶回 <b>' + kept + '</b> 隻田鼠' + (ok ? '' : '（慌忙中掉了一半）') + '。'));
+    var why = '';
+    if (how === 'caught') {
+      if (R.cause === 'moon') why = '月光太亮了，農夫不用手電筒也看得到你。白色圓圈就是他在月光下看得到的範圍。';
+      else if (R.cause === 'dog') why = '狗聞著你的氣味追上來了。下次走進水圳，讓氣味斷掉。';
+      else why = '被手電筒照到了。黃色扇形就是手電筒的光，躲進草叢可以擋住。';
     }
-    if (store.done[5]) {
-      var sb = el('button', 'lvl-btn', '<span class="num">總</span><span>月相總複習</span>');
-      sb.type = 'button'; sb.addEventListener('click', showSummary); right.appendChild(sb);
-    }
-    wrap.appendChild(right);
-    p.appendChild(wrap);
-  }, true);
-}
-
-function openLevel(id) {
-  G.level = id;
-  G.mode = 'brief';
-  setHud(false);
-  if (id === 1) briefL1();
-  else if (id === 5) briefL5();
-  else briefCal(id);
-}
-
-function levelHeader(p, id) {
-  p.appendChild(el('div', 'eyebrow', '第 ' + id + ' 關'));
-  p.appendChild(el('h2', '', LV[id].title));
-}
-
-/* ---- 第 1 關：收集與排列月相卡片 ---- */
-function briefL1() {
-  showPanel(function (p) {
-    levelHeader(p, 1);
-    p.appendChild(el('p', '', '月相卡片被風吹散在田裡了！把 <b>8 張月相卡片</b>全部撿回來，再回到竹林，把它們排成正確的順序。'));
-    p.appendChild(el('div', 'note', '今晚是<b>新月</b>，是一個月裡最暗的夜晚，很適合練習潛入。小心巡田農夫的<b>手電筒</b>（黃色扇形）！'));
-    p.appendChild(el('p', 'mute small', isTouch ? '用左下角的搖桿移動。' : '用方向鍵或 W A S D 移動。'));
-    var r = el('div', 'row end');
-    r.appendChild(btn('回選單', '', goTitle));
-    r.appendChild(btn('出發', 'primary', function () {
-      startSneak({ b: 0.02, skyAngle: 0, moonUp: true, farmers: 1, cards: true, slow: true });
-    }));
-    p.appendChild(r);
+    s.appendChild(el('div', 'why' + (ok ? ' ok' : ''), nightStory(entry.ld, entry.h0) + (why ? '<br>' + why : '')));
+    var row = el('div', 'row');
+    row.appendChild(pbtn('回到計畫板', true, function () { closeSheet(); endNight(); }));
+    s.appendChild(row);
   });
 }
-
-function sortCards() {
-  G.mode = 'sort';
-  setHud(false);
-  var placed = 0;
-  var msg;
-  showPanel(function (p) {
-    levelHeader(p, 1);
-    p.appendChild(el('p', '', '從<b>新月</b>開始，依照月亮變化的順序，一張一張點選卡片。'));
-    var slots = el('div', 'slots');
-    var slotEls = [];
-    for (var i = 0; i < 8; i++) {
-      var s = el('div', 'slot', i === 0 ? '從新月開始' : String(i + 1));
-      slots.appendChild(s); slotEls.push(s);
-    }
-    p.appendChild(el('div', 'small mute', '月相順序'));
-    p.appendChild(slots);
-    p.appendChild(el('div', 'small mute', '撿到的卡片'));
-    var pool = el('div', 'pool');
-    var order = shuffle([0, 1, 2, 3, 4, 5, 6, 7]);
-    for (var j = 0; j < 8; j++) {
-      (function (idx) {
-        var c = el('button', 'pcard');
-        c.type = 'button';
-        c.setAttribute('aria-label', '月相卡片');
-        c.appendChild(moonCanvas(64, PH[idx].a));
-        c.addEventListener('click', function () {
-          if (idx === placed) {
-            c.classList.add('used');
-            var s = slotEls[placed];
-            s.innerHTML = ''; s.className = 'slot filled';
-            s.appendChild(moonCanvas(64, PH[idx].a));
-            s.appendChild(el('span', '', PH[idx].n));
-            placed++;
-            msg.className = 'note good';
-            msg.innerHTML = placed < 8 ? '對！這是<b>' + PH[idx].n + '</b>。下一張是哪一個呢？' : '全部排好了！';
-            if (placed === 8) setTimeout(function () { clearLevel(1); }, 600);
-          } else {
-            c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
-            msg.className = 'note bad';
-            msg.innerHTML = sortHint(placed, idx);
-          }
-        });
-        pool.appendChild(c);
-      })(order[j]);
-    }
-    p.appendChild(pool);
-    msg = el('div', 'note', '提示：新月時看不到月亮，所以卡片上只有虛線圓圈。');
-    p.appendChild(msg);
-  }, true);
+function sleepNight() {
+  audioInit(); SFX.stamp();
+  C.journal.push({ ld: tonightLD(), raided: false });
+  endNight();
 }
-function sortHint(placed, wrong) {
-  if (placed === 0) return '第一張是新月：月亮看起來完全不亮，只有虛線。';
-  var want = PH[placed].a, got = PH[wrong].a;
-  if (want < 180 && got > 180 && Math.abs((360 - got) - want) < 1) return '亮的方向反了！新月到滿月這段時間，是月亮的<b>右邊</b>先亮起來。';
-  if (want > 180 && got < 180 && Math.abs((360 - got) - want) < 1) return '亮的方向反了！滿月之後，月亮右邊先變暗，剩下<b>左邊</b>亮。';
-  if (want <= 180) return '新月之後，亮的部分會<b>一天比一天大</b>，直到滿月。';
-  return '滿月之後，亮的部分會<b>一天比一天小</b>，最後回到新月。';
+function endNight() {
+  C.stock -= 1;
+  if (C.stock < 0) { C.stock = 0; C.hungry++; }
+  C.night++;
+  save();
+  if (C.hungry >= 3) { showFail(); return; }
+  if (C.night >= 30) { showFinale(); return; }
+  showPlan();
 }
 
-/* ---- 第 2 到 4 關：月曆推算 ---- */
-function briefCal(id) {
-  var cfg = LV[id];
-  if (!G.calDay || G.calLevel !== id) { G.calDay = pick(cfg.days); G.calLevel = id; }
-  showCalendar(id, null);
-}
-function clueBlock(id, d) {
-  var cfg = LV[id];
-  var box = el('div', 'clue');
-  if (cfg.clueType === 'moon') {
-    box.appendChild(moonCanvas(96, angleOfDay(d), '#060a18'));
-    var t = el('div', '');
-    t.appendChild(el('p', '', '石虎今天晚上抬頭看，月亮長這樣。'));
-    if (id === 4) t.appendChild(el('p', 'mute small', '這一關沒有小幫手，要自己看清楚亮的是哪一邊。'));
-    else t.appendChild(el('p', 'mute small', '不知道是什麼月相？打開「月相小幫手」查一查。'));
-    box.appendChild(t);
-  } else {
-    var big = el('div', '', '<div class="small mute">今天是</div><div style="font-family:var(--display);font-size:40px;color:var(--moon);line-height:1.1">農曆' + lunarName(d) + '</div>');
-    box.appendChild(big);
-    box.appendChild(el('p', 'mute small', '遊戲裡的農曆，每個月都有 30 天。'));
-  }
-  return box;
-}
-function showCalendar(id, feedback) {
-  G.mode = 'plan';
-  setHud(false);
-  var d = G.calDay;
-  var sel = -1;
-  showPanel(function (p) {
-    levelHeader(p, id);
-    p.appendChild(clueBlock(id, d));
-    if (feedback) p.appendChild(feedback);
-    p.appendChild(el('p', '', '石虎要等到<b>最暗的夜晚</b>才出門。點選月曆上的那一天：'));
-    var cal = el('div', 'cal');
-    var weeks = ['今天起', '1 週後', '2 週後', '3 週後', '4 週後'];
-    var cells = [];
-    var pickedTxt = el('p', 'mute', '還沒有選日子。');
-    var goBtn = btn('就是這一晚，出發！', 'primary', function () {
-      if (sel < 0) return;
-      launchFromCalendar(id, d, sel);
-    });
-    goBtn.disabled = true;
-    for (var w = 0; w < 5; w++) {
-      cal.appendChild(el('div', 'wk', weeks[w]));
-      for (var k = 0; k < 7; k++) {
-        (function (n) {
-          var c = el('button', n === 0 ? 'today' : '', n === 0 ? '今天' : n + '<small>天後</small>');
-          c.type = 'button';
-          c.addEventListener('click', function () {
-            for (var q = 0; q < cells.length; q++) cells[q].classList.remove('sel');
-            c.classList.add('sel'); sel = n;
-            pickedTxt.innerHTML = n === 0 ? '你選了<b>今天晚上</b>。' : '你選了 <b>' + n + ' 天後</b>的晚上。';
-            goBtn.disabled = false;
-          });
-          cells.push(c); cal.appendChild(c);
-        })(w * 7 + k);
-      }
-    }
-    p.appendChild(cal);
-    p.appendChild(pickedTxt);
-    var r = el('div', 'row end');
-    r.appendChild(btn('回選單', '', goTitle));
-    if (LV[id].helper) r.appendChild(btn('月相小幫手', '', function () { openHelper(false); }));
-    r.appendChild(goBtn);
-    p.appendChild(r);
-  }, true);
-}
-function launchFromCalendar(id, d, n) {
-  var ld = lunarAfter(d, n);
-  var ang = angleOfDay(ld);
-  var il = illumOf(ang);
-  G.choice = { d: d, n: n, ld: ld, ok: isNewMoonDay(ld) };
-  startSneak({ b: il, skyAngle: ang, moonUp: true, mice: LV[id].mice, farmers: LV[id].farmers });
-}
-function calFeedback(id, caught) {
-  var c = G.choice, d = c.d, ld = c.ld;
-  var ph = PH[phaseIdxOfDay(ld)];
-  var il = illumOf(angleOfDay(ld));
-  var box = el('div', 'note bad');
-  var head = (c.n === 0 ? '今天晚上' : c.n + ' 天後') + '是<b>農曆' + lunarName(ld) + '</b>，月相是<b>' + ph.n + '</b>，月光' + brightWord(il) + '！';
-  var lead = caught ? '被發現了！' : '你成功溜回竹林，但只是運氣好。';
-  var hint = '';
-  var startPh = phaseIdxOfDay(d);
-  var mirrorD = Math.round(31.5 - d);
-  var misN = 31 - mirrorD;
-  if (id === 4 && Math.abs(c.n - misN) <= 2) {
-    hint = '你可能把<b>' + PH[startPh].n + '</b>看成<b>' + PH[phaseIdxOfDay(mirrorD)].n + '</b>了。看看今晚的月亮，亮的是<b>左邊</b>：左邊亮表示月亮正在變瘦，很快就是新月！';
-  } else if (startPh === 4 && c.n <= 6) {
-    hint = '滿月之後不會馬上變成新月。月亮會一天一天變瘦，大約 <b>2 週</b>後才是新月。';
-  } else if (LV[id].clueType === 'lunar') {
-    hint = '新月在農曆<b>初一</b>前後。從今天農曆' + lunarName(d) + '數到下個月的初一，一共要幾天？';
-  } else {
-    hint = '月相大約每 <b>7 天</b>變一個階段：新月、上弦月、滿月、下弦月，再回到新月。今晚是' + PH[startPh].n + '，要再過幾個 7 天才是新月？';
-  }
-  box.innerHTML = '<b>' + lead + '</b>' + head + '<br>' + hint;
-  return box;
-}
-
-/* ---- 第 5 關：月亮什麼時候升起 ---- */
-var L5_ROUNDS = [
-  { d: 8 },
-  { d: 22 }
-];
-var L5_OPTS = [
-  { t: '晚上 7 點到 10 點', h0: 19, h1: 22 },
-  { t: '凌晨 1 點到 4 點', h0: 25, h1: 28 }
-];
-function moonRiseHour(d) { return 6 + (d - 1) * 24 / 29.5; }
-function moonAt(d, h) {
-  var x = (((h - moonRiseHour(d)) % 24) + 24) % 24;
-  return { up: x < 12, f: x / 12, alt: x < 12 ? Math.sin(PI * x / 12) : 0 };
-}
-function windowBright(d, o) {
-  var il = illumOf(angleOfDay(d)), sum = 0, n = 0;
-  for (var h = o.h0; h <= o.h1; h += 0.5) { var m = moonAt(d, h); sum += m.up ? (0.5 + 0.5 * m.alt) : 0; n++; }
-  return il * sum / n;
-}
-function briefL5() {
-  G.l5round = 0;
-  showPanel(function (p) {
-    levelHeader(p, 5);
-    p.appendChild(el('p', '', '月亮和太陽一樣，每天從<b>東方升起、西方落下</b>。不同月相的月亮，升起的時間不一樣：'));
-    var t = el('div', 'rise-table');
-    var main = [0, 2, 4, 6];
-    for (var i = 0; i < 4; i++) {
-      var ph = PH[main[i]];
-      var c = el('div');
-      c.appendChild(moonCanvas(48, ph.a));
-      c.appendChild(el('b', '', ph.n));
-      c.appendChild(el('span', '', ph.rise + '<br>左右升起'));
-      t.appendChild(c);
-    }
-    p.appendChild(t);
-    p.appendChild(el('div', 'note', '月亮升起後，大約 <b>12 個小時</b>會落下。月亮還沒升起或已經落下的時候，天空就很暗。'));
-    p.appendChild(el('p', '', '這一關不選日子，而是要選<b>出門的時間</b>。共有 2 個晚上要過。'));
-    var r = el('div', 'row end');
-    r.appendChild(btn('回選單', '', goTitle));
-    r.appendChild(btn('開始', 'primary', function () { showTimeChoice(null); }));
-    p.appendChild(r);
-  });
-}
-function showTimeChoice(feedback) {
-  G.mode = 'plan';
-  setHud(false);
-  var rd = L5_ROUNDS[G.l5round];
-  var ph = PH[phaseIdxOfDay(rd.d)];
-  showPanel(function (p) {
-    levelHeader(p, 5);
-    p.appendChild(el('div', 'small mute', '第 ' + (G.l5round + 1) + ' 個晚上，共 2 個'));
-    var clue = el('div', 'clue');
-    clue.appendChild(moonCanvas(88, angleOfDay(rd.d), '#060a18'));
-    clue.appendChild(el('p', '', '今天是<b>農曆' + lunarName(rd.d) + '</b>，月相是<b>' + ph.n + '</b>。<br>石虎在哪一段時間出門，天空最暗？'));
-    p.appendChild(clue);
-    if (feedback) p.appendChild(feedback);
-    var opts = el('div', 'opts');
-    for (var i = 0; i < L5_OPTS.length; i++) {
-      (function (o) {
-        var b = el('button', 'opt', o.t);
-        b.type = 'button';
-        b.addEventListener('click', function () { showSkyDial(rd, o); });
-        opts.appendChild(b);
-      })(L5_OPTS[i]);
-    }
-    p.appendChild(opts);
-    var r = el('div', 'row end');
-    r.appendChild(btn('回選單', '', goTitle));
-    r.appendChild(btn('月相小幫手', '', function () { openHelper(true); }));
-    p.appendChild(r);
-  });
-}
-function dialCanvas(d, o) {
-  var W = 340, H = 190;
-  var c = makeCanvas(W, H);
-  c.style.maxWidth = '100%'; c.style.height = 'auto';
+/* ================= 計畫板 ================= */
+var boardMode = 'title';
+var chosenDep = null;
+function makeCork() {
+  var c = document.createElement('canvas'); c.width = 220; c.height = 220;
   var ctx = c.getContext('2d');
-  var cx = W / 2, cy = H - 34, R = 130;
-  ctx.fillStyle = '#060a18'; ctx.fillRect(0, 0, W, H);
-  ctx.strokeStyle = 'rgba(169,180,212,0.45)'; ctx.setLineDash([4, 5]); ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.arc(cx, cy, R, PI, 0, false); ctx.stroke(); ctx.setLineDash([]);
-  ctx.fillStyle = '#1d3322'; ctx.fillRect(0, cy, W, H - cy);
-  ctx.fillStyle = '#a9b4d4'; ctx.font = '15px "Noto Sans TC", sans-serif'; ctx.textAlign = 'center';
-  ctx.fillText('東', cx - R, cy + 22); ctx.fillText('南', cx, cy + 22); ctx.fillText('西', cx + R, cy + 22);
-  var mid = (o.h0 + o.h1) / 2;
-  var m = moonAt(d, mid);
-  if (m.up) {
-    var ang = PI - m.f * PI;
-    var mx = cx + Math.cos(ang) * R, my = cy - Math.sin(ang) * R;
-    drawMoon(ctx, mx, my, 18, angleOfDay(d), { glow: true, darkColor: '#141a30' });
-  } else {
-    ctx.fillStyle = '#a9b4d4'; ctx.font = '16px "Noto Sans TC", sans-serif';
-    ctx.fillText('這段時間月亮在地平線下面', cx, cy - 60);
+  ctx.fillStyle = '#b4885a'; ctx.fillRect(0, 0, 220, 220);
+  for (var i = 0; i < 2600; i++) {
+    var x = (i * 73.13) % 220, y = (i * 151.7) % 220, r = 0.6 + (i % 5) * 0.35;
+    ctx.fillStyle = i % 3 === 0 ? 'rgba(90,55,25,0.35)' : (i % 3 === 1 ? 'rgba(220,180,130,0.35)' : 'rgba(140,95,55,0.4)');
+    ctx.beginPath(); ctx.arc(x, y, r, 0, PI * 2); ctx.fill();
   }
-  return c;
+  $('board').style.backgroundImage = 'url(' + c.toDataURL() + ')';
 }
-function showSkyDial(rd, o) {
-  var b = windowBright(rd.d, o);
-  var other = L5_OPTS[0] === o ? L5_OPTS[1] : L5_OPTS[0];
-  var ok = b <= windowBright(rd.d, other);
-  var m = moonAt(rd.d, (o.h0 + o.h1) / 2);
-  G.choice = { l5: true, d: rd.d, o: o, ok: ok, up: m.up };
-  showPanel(function (p) {
-    levelHeader(p, 5);
-    p.appendChild(el('p', '', '出門前，看看<b>' + o.t + '</b>的南方天空：'));
-    var wrap = el('div', ''); wrap.style.textAlign = 'center';
-    wrap.appendChild(dialCanvas(rd.d, o));
-    p.appendChild(wrap);
-    p.appendChild(el('p', 'mute small', m.up ? '月亮在天上，田裡會被月光照亮。' : '月亮還沒升起或已經落下，天空很暗。'));
-    var r = el('div', 'row end');
-    r.appendChild(btn('換一個時間', '', function () { showTimeChoice(null); }));
-    r.appendChild(btn('出發', 'primary', function () {
-      startSneak({ b: b, skyAngle: angleOfDay(rd.d), moonUp: m.up, mice: LV[5].mice, farmers: LV[5].farmers });
-    }));
-    p.appendChild(r);
-  });
-}
-function l5Feedback(caught) {
-  var c = G.choice;
-  var box = el('div', 'note bad');
-  var ph = PH[phaseIdxOfDay(c.d)];
-  var why = c.d < 15
-    ? ph.n + '大約<b>中午</b>升起、<b>半夜</b>落下，所以晚上 7 點到 10 點月亮還掛在天上。等月亮落下以後再出門吧！'
-    : ph.n + '大約<b>半夜</b>才升起，所以凌晨月亮正高高掛著。趁月亮還沒升起的時候出門吧！';
-  box.innerHTML = '<b>' + (caught ? '被發現了！' : '你成功溜回來，但只是運氣好。') + '</b>' + why;
-  return box;
+function showBoard() {
+  $('hud').hidden = true; $('board').hidden = false;
+  if (R) R.ended = true;
+  musicStop();
 }
 
-/* ---- 潛入結束 ---- */
-function endSneak(win) {
-  G.done = true;
-  G.mode = 'result';
-  setHud(false);
-  var id = G.level;
-  if (id === 1) {
-    if (win) { sortCards(); return; }
-    showPanel(function (p) {
-      levelHeader(p, 1);
-      p.appendChild(el('div', 'note bad', '<b>被手電筒照到了！</b>就算是最暗的新月夜晚，也要避開手電筒的黃色光。躲進草叢可以擋住光線。'));
-      var r = el('div', 'row end');
-      r.appendChild(btn('回選單', '', goTitle));
-      r.appendChild(btn('再試一次', 'primary', briefL1));
-      p.appendChild(r);
-    });
-    return;
+function showTitle() {
+  boardMode = 'title'; showBoard(); closeSheet();
+  var b = $('board'); b.innerHTML = '';
+  var inner = el('div', 'board-inner');
+  var grid = el('div', 'title-grid');
+  var folder = el('div', 'folder');
+  folder.appendChild(el('div', 'stamp', '絕密'));
+  folder.appendChild(el('div', 'label', '行動檔案 第 001 號'));
+  folder.appendChild(el('h1', '', '石虎<br>月夜行'));
+  folder.appendChild(el('p', '', '石虎媽媽要帶著小石虎撐過 <b>30 個夜晚</b>。每天晚上，月亮都會變。看懂月亮，挑最暗的時候溜進田裡抓田鼠！'));
+  var btns = el('div', 'title-btns');
+  var hasSave = C && !C.over && (C.night > 0 || C.journal.length > 0);
+  var go = el('button', 'go', hasSave ? '繼續行動' : '開始行動');
+  go.type = 'button';
+  on(go, 'click', function () { audioInit(); SFX.stamp(); if (!hasSave) newCampaign(); showPlan(); });
+  btns.appendChild(go);
+  if (hasSave) btns.appendChild(on(el('button', 'sleep', '重新開始一個月'), 'click', function () { audioInit(); newCampaign(); showPlan(); }));
+  folder.appendChild(btns);
+  grid.appendChild(folder);
+  var pol = el('div', 'paper suspect pin');
+  var img = el('img'); img.alt = '石虎的照片'; if (suspectURL) img.src = suspectURL;
+  pol.appendChild(img);
+  pol.appendChild(el('div', 'cap', '行動隊長：石虎媽媽'));
+  grid.appendChild(pol);
+  inner.appendChild(grid);
+  var rules = el('div', 'rules');
+  var rs = [
+    ['計畫', '每晚先看計畫板：今晚的月亮長什麼樣子？月亮幾點升起？再決定出動，還是躲起來睡一晚。'],
+    ['行動', (isTouch ? '用左下角搖桿移動。' : '用方向鍵或 W A S D 移動。') + '避開手電筒的黃光和月光的白圈，躲進草叢，抓到田鼠就回竹林。'],
+    ['存糧', '每晚全家要吃掉 1 隻田鼠。存糧吃光會餓肚子，餓 3 次行動就失敗了。']
+  ];
+  for (var i = 0; i < 3; i++) rules.appendChild(el('div', 'sticky', '<div class="who">' + rs[i][0] + '</div>' + rs[i][1]));
+  inner.appendChild(rules);
+  b.appendChild(inner);
+  b.scrollTop = 0;
+}
+
+function timelineHTML(ld, dep) {
+  var segs = '', i, h, s = -1;
+  var visible = illum(angleOf(ld)) > 0.04;
+  for (h = 18; h <= 30.001; h += 0.25) {
+    var up = visible && moonAt(ld, h).up;
+    if (up && s < 0) s = h;
+    if (s >= 0 && (!up || h >= 30)) { var e = up ? 30 : h; segs += '<div class="tl-moon" style="left:' + ((s - 18) / 12 * 100).toFixed(2) + '%;width:' + ((e - s) / 12 * 100).toFixed(2) + '%"></div>'; s = -1; }
   }
-  var c = G.choice;
-  if (c.ok) {
-    if (win) {
-      if (id === 5) {
-        if (G.l5round === 0) {
-          G.l5round = 1;
-          var fb = el('div', 'note good', '<b>成功！</b>上弦月大約中午升起、半夜落下，所以<b>後半夜</b>比較暗。換下一個晚上囉！');
-          showTimeChoice(fb);
-          return;
-        }
-        clearLevel(5);
-        return;
-      }
-      G.calDay = null;
-      clearLevel(id);
-      return;
+  var win = dep ? '<div class="tl-win" style="left:' + ((dep - 18) / 12 * 100).toFixed(2) + '%;width:' + (RUN_HOURS / 12 * 100).toFixed(2) + '%"></div>' : '';
+  var ticks = '', lab = ['18', '20', '22', '00', '02', '04', '06'];
+  for (i = 0; i < lab.length; i++) ticks += '<span>' + lab[i] + '</span>';
+  return '<div class="tl-bar">' + segs + win + '</div><div class="tl-ticks">' + ticks + '</div>';
+}
+
+function showPlan() {
+  boardMode = 'plan'; showBoard(); closeSheet();
+  chosenDep = null;
+  var fresh = refreshNotes();
+  save();
+  var ld = tonightLD(), ph = PH[phaseIdx(ld)], il = illum(angleOf(ld));
+  var b = $('board'); b.innerHTML = '';
+  var inner = el('div', 'board-inner');
+
+  var top = el('div', 'topbar');
+  top.appendChild(el('div', 'file-tab', '<span class="code">行動計畫板</span><span class="night">第 ' + (C.night + 1) + ' 晚 / 30</span><span>農曆' + lunarName(ld) + '</span>'));
+  var tags = el('div', 'tags');
+  tags.appendChild(on(el('button', 'tag-btn', '情報簿'), 'click', openNotebook));
+  var snd = el('button', 'tag-btn', prefs.sound ? '聲音：開' : '聲音：關');
+  on(snd, 'click', function () { audioInit(); setSound(!prefs.sound); snd.textContent = prefs.sound ? '聲音：開' : '聲音：關'; });
+  tags.appendChild(snd);
+  tags.appendChild(on(el('button', 'tag-btn', '檔案夾'), 'click', showTitle));
+  top.appendChild(tags);
+  inner.appendChild(top);
+
+  var cols = el('div', 'cols');
+  // 左欄：今晚的照片與時間軸
+  var cA = el('div', 'col');
+  var pol = el('div', 'paper polaroid tape');
+  var photo = makeCanvas(300, 240); photo.className = 'photo'; photo.style.width = '100%'; photo.style.height = 'auto';
+  var peakH = 21, peakB = 0;
+  for (var hh = 18; hh <= 30; hh += 0.5) { var bb = brightAt(ld, hh); if (bb > peakB) { peakB = bb; peakH = hh; } }
+  skyPhoto(photo, 300, 240, ld, peakH);
+  pol.appendChild(photo);
+  pol.appendChild(el('div', 'cap', '<b>' + (il < 0.04 ? '看不到月亮' : ph.n) + '</b><span>' + (peakB > 0 ? clockText(peakH) + ' 拍的南方天空' : '整晚的南方天空') + '</span>'));
+  cA.appendChild(pol);
+
+  var tl = el('div', 'paper timeline pin');
+  tl.appendChild(el('h3', '', '今晚月亮在天上的時間'));
+  var tlBox = el('div', '', timelineHTML(ld, null));
+  tl.appendChild(tlBox);
+  tl.appendChild(el('div', 'tl-legend', il < 0.04 ? '今晚整晚都看不到月亮。' : '黃色斜紋是月亮在天上的時間。月亮大約<b>' + hourWord(riseHour(ld)) + '</b>升起。'));
+  tl.appendChild(el('h3', '', '選出門時間（行動 3 小時）'));
+  var dep = el('div', 'dep');
+  var goBtn, hint;
+  for (var di = 0; di < DEPARTS.length; di++) {
+    (function (d) {
+      var bt = el('button', '', d.t + '<small>' + d.s + '</small>');
+      bt.type = 'button';
+      on(bt, 'click', function () {
+        chosenDep = d.h;
+        var all = dep.querySelectorAll('button'); for (var q = 0; q < all.length; q++) all[q].classList.remove('on');
+        bt.classList.add('on');
+        tlBox.innerHTML = timelineHTML(ld, d.h);
+        goBtn.disabled = false;
+        hint.textContent = '紅框就是你在田裡的時間';
+      });
+      dep.appendChild(bt);
+    })(DEPARTS[di]);
+  }
+  tl.appendChild(dep);
+  cA.appendChild(tl);
+  cols.appendChild(cA);
+
+  // 中欄：月相日記
+  var cB = el('div', 'col c-journal');
+  var jr = el('div', 'paper journal');
+  jr.appendChild(el('div', 'journal-head', '<h2>月相日記</h2><span>紅線串起出動過的夜晚</span>'));
+  var jw = el('div', 'jwrap');
+  var jg = el('div', 'jgrid'); jg.id = 'jgrid';
+  for (var n = 0; n < 30; n++) {
+    var sl, lld = lunarAfter(C.startLD, n);
+    if (n < C.night) {
+      var e = C.journal[n] || { ld: lld, raided: false };
+      sl = el('div', 'slot');
+      sl.appendChild(miniMoon(40, angleOf(lld), false));
+      sl.appendChild(el('span', 'ld', lunarName(lld)));
+      if (e.raided) { sl.appendChild(el('span', 'mark ' + (e.ok ? 'ok' : 'bad'), e.ok ? '+' + e.got : '逃')); sl.setAttribute('data-raid', '1'); }
+      else sl.appendChild(el('span', 'mark zz', '睡'));
+    } else if (n === C.night) {
+      sl = el('div', 'slot today pin');
+      sl.appendChild(miniMoon(40, angleOf(lld), false));
+      sl.appendChild(el('span', 'ld', '今晚'));
+    } else {
+      sl = el('div', 'slot future', '?');
     }
-    showPanel(function (p) {
-      levelHeader(p, id);
-      p.appendChild(el('div', 'note good', '<b>你選的時間是對的！</b>天空很暗，只是不小心被手電筒照到了。'));
-      p.appendChild(el('p', 'mute small', '小技巧：農夫停下來的時候，手電筒會左右大範圍掃動，先躲進草叢等一下。'));
-      var r = el('div', 'row end');
-      r.appendChild(btn('回選單', '', goTitle));
-      r.appendChild(btn('再潛入一次', 'primary', function () {
-        if (id === 5) showSkyDial(L5_ROUNDS[G.l5round], c.o);
-        else launchFromCalendar(id, c.d, c.n);
-      }));
-      p.appendChild(r);
-    });
-    return;
+    jg.appendChild(sl);
   }
-  if (id === 5) showTimeChoice(l5Feedback(!win));
-  else showCalendar(id, calFeedback(id, !win));
+  jw.appendChild(jg);
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'jstring'); svg.id = 'jstring';
+  jw.appendChild(svg);
+  jr.appendChild(jw);
+  cB.appendChild(jr);
+  cols.appendChild(cB);
+
+  // 右欄：存糧、守衛、情報、行動
+  var cC = el('div', 'col');
+  var st = el('div', 'paper card tape');
+  var icons = '';
+  for (var mi = 0; mi < Math.min(C.stock, 24); mi++) icons += MOUSE_SVG;
+  var hung = '';
+  for (var k = 0; k < 3; k++) hung += '<i class="' + (k < C.hungry ? 'on' : '') + '"></i>';
+  var threat = '';
+  for (var fi = 0; fi < guardCount(); fi++) threat += FARMER_SVG;
+  if (dogActive()) threat += DOG_SVG;
+  st.innerHTML = '<h3>存糧</h3><div class="stat-row"><b style="font-family:var(--stamp);font-size:26px">' + C.stock + '</b> 隻田鼠<span style="color:var(--ink-soft);font-size:15px">（每晚吃掉 1 隻）</span></div><div class="mice">' + icons + '</div>' +
+    '<h3 style="margin-top:12px">餓肚子</h3><div class="hunger">' + hung + '</div>' +
+    '<h3 style="margin-top:12px">田裡的守衛</h3><div class="threat">' + threat + '</div>';
+  cC.appendChild(st);
+
+  var showIds = fresh.length ? fresh.slice(-2) : C.notes.slice(-1);
+  for (var si = 0; si < showIds.length; si++) {
+    var nt = noteById(showIds[si]); if (!nt) continue;
+    cC.appendChild(el('div', 'sticky', '<div class="who">' + OWL_SVG + '貓頭鷹情報' + (fresh.indexOf(nt.id) >= 0 ? '<span class="new">新</span>' : '') + '</div>' + nt.t));
+  }
+
+  var act = el('div', 'actions');
+  goBtn = el('button', 'go', '今晚出動！');
+  goBtn.type = 'button'; goBtn.disabled = true;
+  on(goBtn, 'click', function () { if (chosenDep) { SFX.stamp(); startRun(chosenDep); } });
+  act.appendChild(goBtn);
+  hint = el('div', 'hint', '先選出門時間');
+  act.appendChild(hint);
+  act.appendChild(on(el('button', 'sleep', '躲起來，睡一晚'), 'click', sleepNight));
+  cC.appendChild(act);
+  cols.appendChild(cC);
+  inner.appendChild(cols);
+  b.appendChild(inner);
+  b.scrollTop = 0;
+  requestAnimationFrame(drawString);
+}
+function drawString() {
+  var g = $('jgrid'), svg = $('jstring');
+  if (!g || !svg) return;
+  var raids = g.querySelectorAll('[data-raid]');
+  var base = g.getBoundingClientRect();
+  svg.setAttribute('width', base.width); svg.setAttribute('height', base.height);
+  svg.setAttribute('viewBox', '0 0 ' + base.width + ' ' + base.height);
+  var pts = [], dots = '';
+  for (var i = 0; i < raids.length; i++) {
+    var r = raids[i].getBoundingClientRect();
+    var x = r.left - base.left + r.width / 2, y = r.top - base.top + 8;
+    pts.push(x.toFixed(1) + ',' + y.toFixed(1));
+    dots += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="4.5" fill="#c4332a" stroke="#7a1712" stroke-width="1.5"/>';
+  }
+  svg.innerHTML = (pts.length > 1 ? '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#c4332a" stroke-width="2" stroke-linejoin="round" opacity="0.85"/>' : '') + dots;
 }
 
-var CLEAR_TEXT = {
-  1: '月相的順序是：新月、眉形月、上弦月、盈凸月、滿月、虧凸月、下弦月、殘月，再回到新月。變化一輪大約 <b>29.5 天</b>，差不多一個月。',
-  2: '新月在農曆<b>初一</b>前後。這時月亮和太陽在同一個方向，被太陽照亮的那一半背對著地球，所以晚上看不到月亮。',
-  3: '農曆的日期跟著月相走：初一新月、初七八上弦月、十五六滿月、廿二三下弦月。看農曆就能推算月相！',
-  4: '在臺灣看月亮：<b>右邊亮</b>是月亮正在變胖（眉形月、上弦月、盈凸月）；<b>左邊亮</b>是月亮正在變瘦（虧凸月、下弦月、殘月）。',
-  5: '下弦月大約半夜才升起，所以<b>前半夜</b>比較暗；上弦月大約半夜落下，所以<b>後半夜</b>比較暗。月相不同，月亮出現的時間也不同。'
-};
-function clearLevel(id) {
-  store.done[id] = true; saveStore();
-  G.mode = 'clear';
-  setHud(false);
-  showPanel(function (p) {
-    p.appendChild(el('div', 'eyebrow', '第 ' + id + ' 關 過關'));
-    p.appendChild(el('h2', '', id === 1 ? '月相卡片全部排好了！' : '石虎吃飽了，平安回到竹林！'));
-    p.appendChild(el('div', 'note good', CLEAR_TEXT[id]));
-    var r = el('div', 'row end');
-    r.appendChild(btn('回選單', '', goTitle));
-    if (id < 5) r.appendChild(btn('下一關', 'primary', function () { openLevel(id + 1); }));
-    else r.appendChild(btn('看月相總複習', 'primary', showSummary));
-    p.appendChild(r);
-  });
-}
-
-function showSummary() {
-  G.mode = 'summary';
-  setHud(false);
-  showPanel(function (p) {
-    p.appendChild(el('div', 'eyebrow', '全部過關'));
-    p.appendChild(el('h2', '', '月相總複習'));
-    p.appendChild(el('p', '', '月亮本身不會發光，我們看到的是<b>被太陽照亮的那一半</b>。月亮繞著地球轉，我們看到亮的部分就跟著改變。'));
-    var g = el('div', 'sum-grid');
+/* ================= 情報簿（含月相祕密圖） ================= */
+var orbitAng = 90;
+function openNotebook() {
+  openSheet(function (s) {
+    s.appendChild(el('div', 'big-stamp bad', '情報簿'));
+    s.appendChild(el('h2', '', '貓頭鷹的祕密圖'));
+    var top = el('div', 'helper-top');
+    var oc = makeCanvas(280, 280); oc.id = 'orbitCanvas';
+    top.appendChild(oc);
+    var view = el('div', '');
+    view.style.display = 'flex'; view.style.flexDirection = 'column'; view.style.gap = '6px'; view.style.alignItems = 'center'; view.style.textAlign = 'center';
+    var vc = makeCanvas(120, 120);
+    var nm = el('div', '', ''); nm.style.fontSize = '26px'; nm.style.fontWeight = '700';
+    view.appendChild(el('div', '', '從臺灣看到的月亮'));
+    view.appendChild(vc); view.appendChild(nm);
+    view.appendChild(el('p', '', '拖曳左圖的月亮，讓它繞地球轉一圈。'));
+    view.appendChild(el('p', '', '太陽永遠照亮月亮的一半。月相<b>不是</b>地球的影子造成的，地球的影子在背對太陽的那一邊。'));
+    top.appendChild(view);
+    s.appendChild(top);
+    var grid = el('div', 'phase-grid');
     for (var i = 0; i < 8; i++) {
-      var c = el('div');
-      c.appendChild(moonCanvas(56, PH[i].a));
-      c.appendChild(el('b', '', PH[i].n));
-      c.appendChild(el('span', '', '農曆' + PH[i].days + (PH[i].rise ? '<br>' + PH[i].rise + '升起' : '')));
-      g.appendChild(c);
+      (function (i) {
+        var c = el('button', 'phase-cell'); c.type = 'button';
+        c.appendChild(miniMoon(46, PH[i].a, false));
+        c.appendChild(el('b', '', PH[i].n));
+        c.appendChild(el('span', '', '農曆' + PH[i].days + (PH[i].rise ? '<br>' + PH[i].rise + '升起' : '')));
+        on(c, 'click', function () { orbitAng = PH[i].a; redraw(); });
+        grid.appendChild(c);
+      })(i);
     }
-    p.appendChild(g);
-    p.appendChild(el('div', 'note', '月相不是地球的影子造成的。地球的影子遮住月亮叫做<b>月食</b>，只有在滿月時偶爾發生。'));
-    var r = el('div', 'row end');
-    r.appendChild(btn('回選單', 'primary', goTitle));
-    p.appendChild(r);
+    s.appendChild(grid);
+    if (C && C.notes.length) {
+      s.appendChild(el('h2', '', '收集到的情報'));
+      var nl = el('div', 'notes-list');
+      for (var k = 0; k < C.notes.length; k++) { var nt = noteById(C.notes[k]); if (nt) nl.appendChild(el('div', 'sticky', '<div class="who">' + OWL_SVG + '貓頭鷹情報</div>' + nt.t)); }
+      s.appendChild(nl);
+    }
+    var row = el('div', 'row'); row.appendChild(pbtn('收起情報簿', true, closeSheet)); s.appendChild(row);
+
+    function halfLit(ctx, x, y, r, dark, light) {
+      ctx.beginPath(); ctx.arc(x, y, r, 0, PI * 2); ctx.fillStyle = dark; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(x, y - r); ctx.arc(x, y, r, -PI / 2, PI / 2, false); ctx.closePath(); ctx.fillStyle = light; ctx.fill();
+    }
+    function redraw() {
+      var ctx = oc.getContext('2d'), W = 280, cx = 140, cy = 140, Rr = 98;
+      ctx.fillStyle = '#0e1a33'; ctx.fillRect(0, 0, W, W);
+      ctx.strokeStyle = 'rgba(255,199,102,0.45)'; ctx.lineWidth = 1.5;
+      for (var y = 20; y < W; y += 28) { ctx.beginPath(); ctx.moveTo(W - 6, y); ctx.lineTo(W - 38, y); ctx.moveTo(W - 38, y); ctx.lineTo(W - 32, y - 4); ctx.moveTo(W - 38, y); ctx.lineTo(W - 32, y + 4); ctx.stroke(); }
+      ctx.fillStyle = '#ffc766'; ctx.font = '13px "Noto Sans TC", sans-serif'; ctx.textAlign = 'right'; ctx.fillText('太陽光', W - 8, W - 8);
+      ctx.setLineDash([3, 5]); ctx.strokeStyle = 'rgba(200,210,235,0.5)'; ctx.beginPath(); ctx.arc(cx, cy, Rr, 0, PI * 2); ctx.stroke(); ctx.setLineDash([]);
+      halfLit(ctx, cx, cy, 20, '#1d3d78', '#5fa0e8');
+      ctx.fillStyle = '#c8d2ea'; ctx.textAlign = 'center'; ctx.fillText('地球', cx, cy + 36);
+      var rad = orbitAng * PI / 180, mx = cx + Math.cos(rad) * Rr, my = cy - Math.sin(rad) * Rr;
+      halfLit(ctx, mx, my, 12, '#3a4060', '#f3e6b8');
+      ctx.fillText('月亮', mx, my + 26);
+      ctx.textAlign = 'left'; ctx.fillText('從北極上方往下看', 8, 18);
+      var v = vc.getContext('2d'); v.clearRect(0, 0, 120, 120);
+      v.fillStyle = '#0e1a33'; v.beginPath(); v.arc(60, 60, 59, 0, PI * 2); v.fill();
+      drawMoon(v, 60, 60, 44, orbitAng, { outline: true, outlineColor: 'rgba(200,210,235,0.6)', glow: true });
+      nm.textContent = PH[Math.round(orbitAng / 45) % 8].n;
+    }
+    var drag = false;
+    function setA(e) { var rc = oc.getBoundingClientRect(); var x = (e.clientX - rc.left) * 280 / rc.width - 140, y = (e.clientY - rc.top) * 280 / rc.height - 140; orbitAng = (Math.atan2(-y, x) * 180 / PI + 360) % 360; redraw(); }
+    on(oc, 'pointerdown', function (e) { drag = true; oc.setPointerCapture(e.pointerId); setA(e); });
+    on(oc, 'pointermove', function (e) { if (drag) setA(e); });
+    on(oc, 'pointerup', function () { drag = false; });
+    on(oc, 'pointercancel', function () { drag = false; });
+    redraw();
+  }, true, true);
+}
+
+/* ================= 結案 ================= */
+function journalGrid() {
+  var g = el('div', 'final-grid');
+  for (var n = 0; n < 30; n++) {
+    var e = C.journal[n], ld = lunarAfter(C.startLD, n);
+    var c = el('div');
+    c.appendChild(miniMoon(40, angleOf(ld), false));
+    c.appendChild(el('b', '', PH[phaseIdx(ld)].n));
+    c.appendChild(el('span', '', lunarName(ld) + (e && e.raided ? (e.ok ? ' 得手' : ' 被發現') : '')));
+    g.appendChild(c);
+  }
+  return g;
+}
+function showFinale() {
+  C.over = true; save();
+  boardMode = 'end'; showBoard();
+  var raids = 0, oks = 0, total = 0;
+  for (var i = 0; i < C.journal.length; i++) { var e = C.journal[i]; if (e.raided) { raids++; if (e.ok) oks++; total += e.got; } }
+  var stars = C.hungry === 0 ? (C.stock >= 6 ? 3 : 2) : 1;
+  openSheet(function (s) {
+    s.appendChild(el('div', 'big-stamp ok', '結案'));
+    s.appendChild(el('h2', '', '30 個夜晚撐過去了！'));
+    s.appendChild(el('p', 'loot-line', '出動 <b>' + raids + '</b> 次，平安得手 <b>' + oks + '</b> 次，一共帶回 <b>' + total + '</b> 隻田鼠，剩下存糧 <b>' + C.stock + '</b> 隻。評價：' + ['', '一顆', '兩顆', '三顆'][stars] + '月亮。'));
+    s.appendChild(el('div', 'why ok', '這就是你的月相日記：月亮從盈凸月變成滿月，再一天天變瘦成下弦月、殘月、新月，然後又長回來。一輪大約 <b>29.5 天</b>，和農曆一個月差不多。初一新月、初七八上弦月、十五六滿月、廿二三下弦月。'));
+    s.appendChild(journalGrid());
+    var row = el('div', 'row');
+    row.appendChild(pbtn('打開情報簿', false, openNotebook));
+    row.appendChild(pbtn('再挑戰一個月', true, function () { newCampaign(); showPlan(); }));
+    s.appendChild(row);
+  }, true);
+}
+function showFail() {
+  C.over = true; save();
+  boardMode = 'end'; showBoard();
+  openSheet(function (s) {
+    s.appendChild(el('div', 'big-stamp bad', '行動失敗'));
+    s.appendChild(el('h2', '', '小石虎餓壞了'));
+    s.appendChild(el('p', '', '第 ' + C.night + ' 晚，存糧吃光太多次。石虎媽媽只好帶著小石虎搬家。'));
+    s.appendChild(el('div', 'why', '小技巧：看計畫板上的時間軸，挑月亮<b>不在天上</b>的時段出門。新月前後整晚都很暗；下弦月要趁前半夜，上弦月要等後半夜。'));
+    s.appendChild(journalGrid());
+    var row = el('div', 'row'); row.appendChild(pbtn('重新開始一個月', true, function () { newCampaign(); showPlan(); })); s.appendChild(row);
   }, true);
 }
 
-/* ========== 月相小幫手 ========== */
-var helpLayer = $('helpLayer'), helpPanel = $('helpPanel');
-var orbitAng = 90;
-function openHelper(fromL5) {
-  if (G.level && !LV[G.level].helper && (G.mode === 'sneak' || G.mode === 'plan')) return;
-  var wasSneak = G.mode === 'sneak';
-  if (wasSneak) G.pausedFrom = 'sneak', G.mode = 'paused';
-  helpPanel.innerHTML = '';
-  helpPanel.appendChild(el('div', 'eyebrow', '月相小幫手'));
-  helpPanel.appendChild(el('h2', '', '月亮為什麼會變樣子？'));
-  var top = el('div', 'helper-top');
-  var oc = makeCanvas(300, 300); oc.id = 'orbitCanvas';
-  top.appendChild(oc);
-  var view = el('div', 'helper-view');
-  var vc = makeCanvas(130, 130);
-  var nameEl = el('h3', '', '');
-  view.appendChild(el('div', 'small mute', '從臺灣看到的月亮'));
-  view.appendChild(vc);
-  view.appendChild(nameEl);
-  view.appendChild(el('p', 'small', '<b>拖曳</b>左邊圖裡的月亮，讓它繞著地球轉。'));
-  view.appendChild(el('p', 'small mute', '月亮自己不會發光。太陽永遠照亮月亮的一半，月亮轉到不同位置，我們從地球看到的亮面就不一樣。'));
-  top.appendChild(view);
-  helpPanel.appendChild(top);
-  helpPanel.appendChild(el('div', 'note small', '月相<b>不是</b>地球影子遮住造成的。在左圖中，地球的影子在背對太陽的那一邊，月亮平常不會走進去。'));
-  var grid = el('div', 'phase-grid');
-  for (var i = 0; i < 8; i++) {
-    (function (i) {
-      var c = el('button', 'phase-cell');
-      c.type = 'button';
-      c.appendChild(moonCanvas(52, PH[i].a));
-      c.appendChild(el('b', '', PH[i].n));
-      c.appendChild(el('span', '', '農曆' + PH[i].days + (PH[i].rise ? '<br>' + PH[i].rise + '升起' : '')));
-      c.addEventListener('click', function () { orbitAng = PH[i].a; redraw(); });
-      grid.appendChild(c);
-    })(i);
-  }
-  helpPanel.appendChild(grid);
-  var r = el('div', 'row end');
-  var closeB = btn('關閉', 'primary', function () {
-    helpLayer.hidden = true;
-    if (G.mode === 'paused') G.mode = 'sneak';
-  });
-  r.appendChild(closeB);
-  helpPanel.appendChild(r);
-
-  function redraw() {
-    var ctx = oc.getContext('2d');
-    var W = 300, cx = 150, cy = 150, R = 105;
-    ctx.clearRect(0, 0, W, W);
-    ctx.fillStyle = '#060a18'; ctx.fillRect(0, 0, W, W);
-    // 陽光
-    ctx.strokeStyle = 'rgba(255,199,102,0.35)'; ctx.lineWidth = 1.5;
-    for (var y = 20; y < W; y += 28) {
-      ctx.beginPath(); ctx.moveTo(W - 6, y); ctx.lineTo(W - 40, y); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(W - 40, y); ctx.lineTo(W - 34, y - 4); ctx.moveTo(W - 40, y); ctx.lineTo(W - 34, y + 4); ctx.stroke();
-    }
-    ctx.fillStyle = '#ffc766'; ctx.font = '13px "Noto Sans TC", sans-serif'; ctx.textAlign = 'right';
-    ctx.fillText('太陽光', W - 8, W - 8);
-    // 軌道
-    ctx.setLineDash([3, 5]); ctx.strokeStyle = 'rgba(169,180,212,0.5)';
-    ctx.beginPath(); ctx.arc(cx, cy, R, 0, PI * 2); ctx.stroke(); ctx.setLineDash([]);
-    // 地球
-    halfLit(ctx, cx, cy, 22, '#1d3d78', '#5fa0e8');
-    ctx.fillStyle = '#a9b4d4'; ctx.textAlign = 'center'; ctx.fillText('地球', cx, cy + 40);
-    // 月亮
-    var rad = orbitAng * PI / 180;
-    var mx = cx + Math.cos(rad) * R, my = cy - Math.sin(rad) * R;
-    halfLit(ctx, mx, my, 13, '#3a4060', '#f3e6b8');
-    ctx.fillText('月亮', mx, my + 28);
-    ctx.fillStyle = '#a9b4d4'; ctx.textAlign = 'left';
-    ctx.fillText('從北極上方往下看', 8, 18);
-    var vctx = vc.getContext('2d');
-    vctx.clearRect(0, 0, 130, 130);
-    vctx.fillStyle = '#060a18'; vctx.beginPath(); vctx.arc(65, 65, 64, 0, PI * 2); vctx.fill();
-    drawMoon(vctx, 65, 65, 48, orbitAng, { outline: true, glow: true });
-    var idx = Math.round(orbitAng / 45) % 8;
-    nameEl.textContent = PH[idx].n;
-  }
-  function halfLit(ctx, x, y, r, dark, light) {
-    ctx.beginPath(); ctx.arc(x, y, r, 0, PI * 2); ctx.fillStyle = dark; ctx.fill();
-    ctx.beginPath(); ctx.moveTo(x, y - r); ctx.arc(x, y, r, -PI / 2, PI / 2, false); ctx.closePath(); ctx.fillStyle = light; ctx.fill();
-  }
-  var dragging = false;
-  function setFromEvent(e) {
-    var rc = oc.getBoundingClientRect();
-    var x = (e.clientX - rc.left) * 300 / rc.width - 150, y = (e.clientY - rc.top) * 300 / rc.height - 150;
-    var a = Math.atan2(-y, x) * 180 / PI;
-    orbitAng = (a + 360) % 360;
-    redraw();
-  }
-  oc.addEventListener('pointerdown', function (e) { dragging = true; oc.setPointerCapture(e.pointerId); setFromEvent(e); });
-  oc.addEventListener('pointermove', function (e) { if (dragging) setFromEvent(e); });
-  oc.addEventListener('pointerup', function () { dragging = false; });
-  oc.addEventListener('pointercancel', function () { dragging = false; });
-  redraw();
-  helpLayer.hidden = false;
-  helpPanel.scrollTop = 0;
-  try { closeB.focus({ preventScroll: true }); } catch (e) {}
-}
-
-$('hudHelp').addEventListener('click', function () { openHelper(false); });
-$('hudMenu').addEventListener('click', function () {
-  G.mode = 'paused';
-  showPanel(function (p) {
-    p.appendChild(el('h2', '', '暫停'));
-    p.appendChild(el('p', '', '要繼續潛入，還是回到選單？'));
-    var r = el('div', 'row end');
-    r.appendChild(btn('回選單', '', goTitle));
-    r.appendChild(btn('繼續', 'primary', function () { hidePanel(); G.mode = 'sneak'; }));
-    p.appendChild(r);
+/* ================= HUD 按鈕 ================= */
+on($('btnSound'), 'click', function () { audioInit(); setSound(!prefs.sound); });
+on($('btnPause'), 'click', function () {
+  if (!R || R.ended) return;
+  paused = true; musicStop();
+  openSheet(function (s) {
+    s.appendChild(el('h2', '', '暫停'));
+    s.appendChild(el('p', '', '時間停住了。要繼續行動，還是放棄今晚、空手回家？'));
+    var row = el('div', 'row');
+    row.appendChild(pbtn('放棄今晚', false, function () { closeSheet(); paused = false; R.got = 0; endRun('home'); }));
+    row.appendChild(pbtn('繼續行動', true, function () { closeSheet(); paused = false; musicStart(); }));
+    s.appendChild(row);
   });
 });
-window.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape' && !helpLayer.hidden) { helpLayer.hidden = true; if (G.mode === 'paused' && layer.hidden) G.mode = 'sneak'; }
-});
 
-/* ========== 啟動 ========== */
-function boot() {
-  if (typeof THREE === 'undefined') {
-    showPanel(function (p) {
-      p.appendChild(el('h2', '', '無法載入 3D 畫面'));
-      p.appendChild(el('p', '', '請確認網路連線後重新整理頁面。'));
-    });
-    return;
-  }
+/* ================= 啟動 ================= */
+var suspectURL = '';
+function takeSuspectPhoto() {
   try {
-    buildWorld();
-  } catch (err) {
-    showPanel(function (p) {
-      p.appendChild(el('h2', '', '這台裝置無法顯示 3D 畫面'));
-      p.appendChild(el('p', '', '請換一個瀏覽器（建議 Chrome 或 Safari）再試一次。'));
-    });
-    return;
-  }
-  // 標題畫面背景：放幾隻農夫與田鼠
-  startSneakPreview();
-  goTitle();
-  loop();
+    var prev = renderer.getSize(new THREE.Vector2());
+    renderer.setSize(480, 360, false);
+    camera.aspect = 480 / 360; camera.updateProjectionMatrix();
+    player.position.set(0, 0, 8); player.rotation.y = -0.7;
+    setNight(0.55);
+    camera.position.set(2.2, 1.6, 5.4); camera.lookAt(0.1, 0.65, 7.8);
+    renderer.render(scene, camera);
+    suspectURL = renderer.domElement.toDataURL('image/jpeg', 0.85);
+    renderer.setSize(prev.x, prev.y, false); onResize();
+    player.position.set(0, 0, 17); player.rotation.y = 0;
+  } catch (e) { suspectURL = ''; }
 }
-function startSneakPreview() {
-  var f = makeFarmer(); f.position.set(-4, 0, -2); f.rotation.y = 0.6; f.userData.ring.scale.set(4, 1, 4); scene.add(f);
-  farmers.push({ obj: f, route: ROUTES[0], wp: 1, wait: 0, yaw: 0.6, phase: 0, speed: 0, visR: 4 });
-  player.position.set(3, 0, 6); player.rotation.y = 0.8;
+function boot() {
+  load();
+  setSound(prefs.sound);
+  makeCork();
+  if (typeof THREE === 'undefined') { $('board').innerHTML = '<div class="board-inner"><div class="paper card"><h3>無法載入 3D 畫面</h3>請確認網路連線後重新整理。</div></div>'; return; }
+  try { buildWorld(); } catch (err) { $('board').innerHTML = '<div class="board-inner"><div class="paper card"><h3>這台裝置無法顯示 3D 畫面</h3>請換 Chrome 或 Safari 再試一次。</div></div>'; return; }
+  takeSuspectPhoto();
+  showTitle();
+  loop();
 }
 boot();
 })();
