@@ -52,7 +52,9 @@ docs/prompt-v2.md   v2 改版需求（遊戲版）
 docs/screenshots/   截圖
 tools/build.sh      由 game.html 產生 index.html
 tools/check.js      JavaScript 語法與特殊字元檢查
-tools/test.py       Playwright 測試（筆電與平板三種尺寸）
+tools/test.py       Playwright 截圖測試（筆電與平板三種尺寸）
+tools/playtest.py   AI 自動試玩測試（11 個情境，錄影）
+tools/report.py     由試玩結果產生測試報告
 ```
 
 ## 修改與部署

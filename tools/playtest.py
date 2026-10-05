@@ -434,7 +434,7 @@ def s10(p):
 
 
 def s11(p):
-    scn = '11 上弦月前後：月亮在行動中途下山'
+    scn = '11 盈凸月：月亮在行動中途下山'
     ctx, pg, errs = open_page(p, 's11')
     board_click(pg, '開始行動')
     caption(pg, '第 1 晚（農曆十二）凌晨 2 點出門，月亮還低低掛在西邊')
