@@ -19,6 +19,7 @@
   --body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   color-scheme: dark;
 }
+[hidden] { display: none !important; }
 html, body { height: 100%; }
 body {
   margin: 0; background: var(--night); color: var(--ink);
@@ -639,7 +640,7 @@ function buildWorld() {
   }
 
   player = makeShihu(); scene.add(player);
-  nightVision = new THREE.PointLight(0xfff0d0, 0.9, 8, 1.6);
+  nightVision = new THREE.PointLight(0xfff0d0, 1.1, 11, 1.4);
   nightVision.position.set(0, 2.2, 0); player.add(nightVision);
   player.position.set(0, 0, 17);
 
@@ -648,7 +649,7 @@ function buildWorld() {
 }
 
 function setNight(b) {
-  hemi.intensity = 0.07 + 0.5 * b;
+  hemi.intensity = 0.16 + 0.45 * b;
   moonLight.intensity = 0.02 + 0.95 * b;
   moonLight.castShadow = b > 0.12;
   var dark = new THREE.Color(0x04060d), lit = new THREE.Color(0x24375e);
@@ -903,7 +904,7 @@ function updateCamera(dt) {
   var tx, tz, h, back;
   if (G.mode === 'sneak') {
     tx = player.position.x; tz = player.position.z;
-    h = portrait ? 17 : 12.5; back = portrait ? 9 : 9.5;
+    h = portrait ? 18 : 14; back = portrait ? 9.5 : 10.5;
     camPos.lerp(new THREE.Vector3(tx, h, tz + back), Math.min(1, dt * 4));
     camera.position.copy(camPos);
     camera.lookAt(tx, 0, tz - 1.2);
