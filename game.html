@@ -1,0 +1,1531 @@
+<title>石虎月夜行</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* 版面概念：整個畫面是石虎眼中的夜晚田野，介面像夜裡攤開的觀察筆記卡，月光奶油色只留給月亮與重點 */
+:root {
+  --night: #0b1124;
+  --night-2: #131c38;
+  --card: #18223f;
+  --line: #2b3863;
+  --ink: #eef1fa;
+  --mute: #a9b4d4;
+  --moon: #f3e6b8;
+  --lamp: #ffb347;
+  --leaf: #8fd694;
+  --alert: #ff7a6e;
+  --display: "Huninn", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--night); color: var(--ink);
+  font-family: var(--body); font-size: 18px; line-height: 1.6;
+  overflow: hidden; -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+#stage { position: fixed; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; }
+button { font-family: var(--body); }
+button:focus-visible { outline: 3px solid var(--moon); outline-offset: 2px; }
+
+/* 覆蓋層 */
+.layer {
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  padding-inline: 16px;
+  padding-block: calc(16px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-bottom, 0px));
+  background: rgba(5, 8, 20, 0.62); z-index: 20; box-sizing: border-box;
+}
+.layer.clear { background: transparent; pointer-events: none; }
+.layer.clear > * { pointer-events: auto; }
+.panel {
+  width: 100%; max-width: 680px; max-height: 100%; overflow-y: auto; box-sizing: border-box;
+  background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+  padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 14px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+}
+.panel.wide { max-width: 860px; }
+.eyebrow { font-size: 14px; letter-spacing: 0.12em; color: var(--lamp); font-weight: 700; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; line-height: 1.25; }
+h1 { font-size: clamp(40px, 9vw, 72px); color: var(--moon); letter-spacing: 0.04em; }
+h2 { font-size: clamp(26px, 5vw, 34px); color: var(--moon); }
+h3 { font-size: 22px; color: var(--ink); }
+p { margin: 0; }
+.mute { color: var(--mute); }
+.small { font-size: 15px; }
+.row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.row.end { justify-content: flex-end; }
+.btn {
+  min-height: 52px; padding: 10px 22px; border-radius: 14px; border: 2px solid var(--line);
+  background: var(--night-2); color: var(--ink); font-size: 19px; font-weight: 700; cursor: pointer;
+}
+.btn:hover { border-color: var(--mute); }
+.btn.primary { background: var(--moon); color: #1c1a10; border-color: var(--moon); }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.note {
+  background: var(--night-2); border-radius: 12px; padding: 12px 14px; border-left: 4px solid var(--lamp);
+}
+.note.good { border-left-color: var(--leaf); }
+.note.bad { border-left-color: var(--alert); }
+
+/* 標題畫面 */
+.title-wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; align-items: center; }
+.title-wrap > * { min-width: 0; }
+.levels { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.lvl-btn {
+  display: flex; align-items: center; gap: 12px; text-align: left; min-height: 56px;
+  padding: 8px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--night-2);
+  color: var(--ink); font-size: 18px; cursor: pointer;
+}
+.lvl-btn .num {
+  font-family: var(--display); font-size: 22px; width: 36px; height: 36px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--line); color: var(--moon); flex: none;
+}
+.lvl-btn.done .num { background: var(--leaf); color: #10240f; }
+.lvl-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.lvl-btn:not(:disabled):hover { border-color: var(--moon); }
+
+/* HUD */
+#hud {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 10; pointer-events: none;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 0; display: flex; gap: 10px;
+  justify-content: space-between; align-items: flex-start; flex-wrap: wrap;
+}
+#hud > * { pointer-events: auto; }
+.hud-card {
+  background: rgba(19, 28, 56, 0.86); border: 1px solid var(--line); border-radius: 14px;
+  padding: 8px 12px; display: flex; gap: 10px; align-items: center;
+}
+.hud-left { display: flex; flex-direction: column; gap: 6px; }
+#hudLevel { font-family: var(--display); color: var(--moon); font-size: 18px; }
+#hudCount { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.meter { width: 140px; height: 12px; border-radius: 6px; background: var(--night); overflow: hidden; border: 1px solid var(--line); }
+.meter > i { display: block; height: 100%; width: 0%; background: var(--alert); }
+#hudSky canvas { display: block; }
+#hudSkyText { font-size: 15px; line-height: 1.3; max-width: 8em; }
+.hud-btns { display: flex; gap: 8px; }
+.hud-btn {
+  min-height: 48px; padding: 6px 14px; border-radius: 12px; border: 1px solid var(--line);
+  background: rgba(19, 28, 56, 0.9); color: var(--ink); font-size: 16px; font-weight: 700; cursor: pointer;
+}
+#hudTip {
+  position: fixed; left: 50%; transform: translateX(-50%); z-index: 10; bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  background: rgba(19, 28, 56, 0.86); border: 1px solid var(--line); border-radius: 999px; padding: 6px 18px;
+  font-size: 16px; white-space: nowrap; max-width: calc(100% - 32px); overflow: hidden; text-overflow: ellipsis; pointer-events: none;
+}
+#hudTip.hide-tip { color: var(--leaf); }
+
+/* 搖桿 */
+#joy {
+  position: fixed; left: 24px; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); width: 132px; height: 132px; border-radius: 50%;
+  background: rgba(238, 241, 250, 0.08); border: 2px solid rgba(238, 241, 250, 0.25); z-index: 11; touch-action: none;
+}
+#joyKnob {
+  position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%;
+  background: rgba(243, 230, 184, 0.7); pointer-events: none;
+}
+
+/* 月曆 */
+.clue { display: flex; gap: 16px; align-items: center; }
+.clue canvas { flex: none; }
+.cal { display: grid; grid-template-columns: 4.2em repeat(7, 1fr); gap: 6px; }
+.cal .wk { font-size: 13px; color: var(--mute); display: flex; align-items: center; line-height: 1.2; }
+.cal button {
+  min-height: 52px; border-radius: 10px; border: 2px solid var(--line); background: var(--night-2); color: var(--ink);
+  font-size: 20px; font-weight: 700; cursor: pointer; padding: 2px; font-variant-numeric: tabular-nums;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1;
+}
+.cal button small { font-size: 11px; font-weight: 500; color: var(--mute); }
+.cal button.today { border-color: var(--lamp); }
+.cal button.sel { background: var(--moon); color: #1c1a10; border-color: var(--moon); }
+.cal button.sel small { color: #4a4530; }
+.cal button:hover:not(.sel) { border-color: var(--mute); }
+
+/* 小幫手 */
+.helper-top { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; }
+.helper-top > * { min-width: 0; }
+.helper-view { display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center; }
+#orbitCanvas { touch-action: none; cursor: grab; max-width: 100%; height: auto; }
+.phase-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.phase-cell {
+  background: var(--night-2); border: 1px solid var(--line); border-radius: 12px; padding: 8px 4px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; color: var(--ink);
+}
+.phase-cell b { font-family: var(--display); font-weight: 400; font-size: 18px; color: var(--moon); }
+.phase-cell span { font-size: 13px; color: var(--mute); line-height: 1.3; text-align: center; }
+
+/* 排列卡片 */
+.slots, .pool { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+.slot, .pcard {
+  aspect-ratio: 3 / 4; max-width: 100%; border-radius: 10px; border: 2px dashed var(--line); background: var(--night);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 12px; color: var(--mute);
+  box-sizing: border-box; padding: 2px; overflow: hidden;
+}
+.slot.filled { border-style: solid; border-color: var(--leaf); color: var(--ink); }
+.slot canvas, .pcard canvas { width: 80%; height: auto; }
+.pcard { border-style: solid; border-color: var(--line); background: var(--night-2); cursor: pointer; }
+.pcard:hover { border-color: var(--moon); }
+.pcard.used { visibility: hidden; }
+.pcard.shake { animation: shake 0.4s; border-color: var(--alert); }
+@keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+/* 時間選擇 */
+.opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.opt {
+  min-height: 72px; border-radius: 14px; border: 2px solid var(--line); background: var(--night-2); color: var(--ink);
+  font-size: 20px; font-weight: 700; cursor: pointer; padding: 8px;
+}
+.opt:hover { border-color: var(--moon); }
+.rise-table { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.rise-table div { background: var(--night-2); border-radius: 10px; padding: 8px; text-align: center; font-size: 15px; line-height: 1.35; }
+.rise-table b { display: block; font-family: var(--display); font-weight: 400; color: var(--moon); font-size: 18px; }
+
+.sum-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.sum-grid div { background: var(--night-2); border-radius: 12px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+.sum-grid b { font-family: var(--display); font-weight: 400; color: var(--moon); font-size: 19px; }
+.sum-grid span { font-size: 14px; color: var(--mute); line-height: 1.35; }
+
+@media (max-width: 720px) {
+  .title-wrap { grid-template-columns: 1fr; }
+  .helper-top { grid-template-columns: 1fr; justify-items: center; }
+  .slots, .pool { grid-template-columns: repeat(4, 1fr); }
+  .rise-table, .sum-grid { grid-template-columns: repeat(2, 1fr); }
+  .cal { grid-template-columns: 2.6em repeat(7, 1fr); gap: 4px; }
+  .cal .wk { font-size: 11px; }
+  .cal button { font-size: 17px; min-height: 46px; }
+  .cal button small { display: none; }
+  .panel { padding: 18px 16px; }
+  .meter { width: 96px; }
+}
+@media (max-width: 440px) {
+  .opts { grid-template-columns: 1fr; }
+  #hudSkyText { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcard.shake { animation: none; }
+}
+</style>
+
+<canvas id="stage" aria-label="3D 夜晚田野"></canvas>
+
+<div id="hud" hidden>
+  <div class="hud-left">
+    <div class="hud-card"><span id="hudLevel">第 1 關</span><span id="hudCount">田鼠 0/4</span></div>
+    <div class="hud-card"><span class="small">被發現</span><div class="meter"><i id="hudMeter"></i></div></div>
+  </div>
+  <div class="hud-card" id="hudSky"><canvas id="hudSkyCanvas" width="56" height="56"></canvas><span id="hudSkyText">今晚的天空</span></div>
+  <div class="hud-btns">
+    <button class="hud-btn" id="hudHelp" type="button">月相小幫手</button>
+    <button class="hud-btn" id="hudMenu" type="button">選單</button>
+  </div>
+</div>
+<div id="hudTip" hidden>躲進草叢，避開手電筒！</div>
+<div id="joy" hidden><div id="joyKnob"></div></div>
+
+<div id="layer" class="layer"><div class="panel" id="panel"></div></div>
+<div id="helpLayer" class="layer" hidden><div class="panel wide" id="helpPanel"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+'use strict';
+
+/* ========== 月相資料與計算 ========== */
+var PI = Math.PI;
+var NUM = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+function lunarName(d) {
+  if (d <= 10) return '初' + NUM[d];
+  if (d < 20) return '十' + NUM[d - 10];
+  if (d === 20) return '二十';
+  if (d < 30) return '廿' + NUM[d - 20];
+  return '三十';
+}
+var PH = [
+  { n: '新月', a: 0, days: '初一前後', rise: '清晨 6 點' },
+  { n: '眉形月', a: 45, days: '初二到初六' },
+  { n: '上弦月', a: 90, days: '初七、初八', rise: '中午 12 點' },
+  { n: '盈凸月', a: 135, days: '初九到十四' },
+  { n: '滿月', a: 180, days: '十五、十六', rise: '傍晚 6 點' },
+  { n: '虧凸月', a: 225, days: '十七到廿一' },
+  { n: '下弦月', a: 270, days: '廿二、廿三', rise: '半夜 12 點' },
+  { n: '殘月', a: 315, days: '廿四到廿九' }
+];
+function phaseIdxOfDay(d) {
+  if (d === 1 || d >= 29) return 0;
+  if (d <= 6) return 1;
+  if (d <= 8) return 2;
+  if (d <= 14) return 3;
+  if (d <= 16) return 4;
+  if (d <= 21) return 5;
+  if (d <= 23) return 6;
+  return 7;
+}
+function angleOfDay(d) { return ((d - 1) / 29.5) * 360; }
+function illumOf(angle) { return (1 - Math.cos(angle * PI / 180)) / 2; }
+function lunarAfter(d, n) { return ((d - 1 + n) % 30) + 1; }
+function isNewMoonDay(ld) { return ld === 1 || ld === 29 || ld === 30; }
+function brightWord(il) {
+  if (il < 0.05) return '幾乎全暗';
+  if (il < 0.3) return '只亮一點點';
+  if (il < 0.7) return '大約亮一半';
+  if (il < 0.95) return '很亮';
+  return '最亮';
+}
+
+/* 畫月相（臺灣在北半球：漸盈右側亮，漸虧左側亮） */
+function drawMoon(ctx, cx, cy, r, angle, opt) {
+  opt = opt || {};
+  angle = ((angle % 360) + 360) % 360;
+  var rad = angle * PI / 180;
+  var il = illumOf(angle);
+  var waxing = angle <= 180;
+  var a = Math.max(Math.abs(Math.cos(rad)) * r, 0.001);
+  ctx.save();
+  if (il < 0.02) {
+    if (opt.outline) {
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = 'rgba(169,180,212,0.7)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, PI * 2); ctx.stroke();
+    }
+    ctx.restore();
+    return;
+  }
+  if (opt.dark !== false) {
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, PI * 2);
+    ctx.fillStyle = opt.darkColor || '#222b49'; ctx.fill();
+  }
+  if (opt.glow) { ctx.shadowColor = 'rgba(243,230,184,0.55)'; ctx.shadowBlur = r * 0.5; }
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - r);
+  ctx.arc(cx, cy, r, -PI / 2, PI / 2, !waxing);
+  var crescent = il < 0.5;
+  var bulgeRight = (waxing && crescent) || (!waxing && !crescent);
+  if (bulgeRight) ctx.ellipse(cx, cy, a, r, 0, PI / 2, -PI / 2, true);
+  else ctx.ellipse(cx, cy, a, r, 0, PI / 2, PI * 1.5, false);
+  ctx.closePath();
+  ctx.fillStyle = '#f3e6b8';
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.clip();
+  ctx.fillStyle = 'rgba(150,136,96,0.28)';
+  var cr = [[-0.3, -0.25, 0.18], [0.25, 0.1, 0.22], [-0.1, 0.4, 0.12], [0.45, -0.4, 0.1], [-0.5, 0.15, 0.1]];
+  for (var i = 0; i < cr.length; i++) {
+    ctx.beginPath(); ctx.arc(cx + cr[i][0] * r, cy + cr[i][1] * r, cr[i][2] * r, 0, PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+var DPR = Math.min(window.devicePixelRatio || 1, 2);
+function makeCanvas(w, h) {
+  var c = document.createElement('canvas');
+  c.width = Math.round(w * DPR); c.height = Math.round(h * DPR);
+  c.style.width = w + 'px'; c.style.height = h + 'px';
+  var ctx = c.getContext('2d'); ctx.scale(DPR, DPR);
+  return c;
+}
+function moonCanvas(size, angle, bg) {
+  var c = makeCanvas(size, size);
+  var ctx = c.getContext('2d');
+  if (bg) { ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(size / 2, size / 2, size / 2, 0, PI * 2); ctx.fill(); }
+  drawMoon(ctx, size / 2, size / 2, size * 0.38, angle, { outline: true });
+  return c;
+}
+
+/* ========== 小工具 ========== */
+function $(id) { return document.getElementById(id); }
+function el(tag, cls, html) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html !== undefined) e.innerHTML = html;
+  return e;
+}
+function btn(label, cls, fn) {
+  var b = el('button', 'btn' + (cls ? ' ' + cls : ''), label);
+  b.type = 'button';
+  b.addEventListener('click', fn);
+  return b;
+}
+function shuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  }
+  return arr;
+}
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+
+var store = { done: {} };
+try { var raw = localStorage.getItem('shihu-moon-progress'); if (raw) store = JSON.parse(raw) || store; } catch (e) {}
+if (!store.done) store.done = {};
+function saveStore() { try { localStorage.setItem('shihu-moon-progress', JSON.stringify(store)); } catch (e) {} }
+function unlocked(id) { return id === 1 || !!store.done[id - 1] || !!store.done[id]; }
+
+/* ========== 畫面切換 ========== */
+var layer = $('layer'), panel = $('panel');
+function showPanel(build, wide) {
+  panel.innerHTML = '';
+  panel.className = 'panel' + (wide ? ' wide' : '');
+  build(panel);
+  layer.hidden = false;
+  panel.scrollTop = 0;
+  var f = panel.querySelector('.btn.primary');
+  if (f) { try { f.focus({ preventScroll: true }); } catch (e) {} }
+}
+function hidePanel() { layer.hidden = true; }
+function setHud(on) {
+  $('hud').hidden = !on; $('hudTip').hidden = !on;
+  $('joy').hidden = !(on && isTouch);
+}
+
+/* ========== 3D 世界 ========== */
+var renderer, scene, camera, hemi, moonLight, nightVision;
+var player, farmers = [], targets = [], bushes = [], trees = [];
+var ringMat, coneMat, exitRing;
+var canvas3d = $('stage');
+
+function canvasTexture(w, h, draw) {
+  var c = document.createElement('canvas'); c.width = w; c.height = h;
+  draw(c.getContext('2d'), w, h);
+  var t = new THREE.CanvasTexture(c);
+  return t;
+}
+function lam(color, extra) {
+  var o = { color: color };
+  if (extra) for (var k in extra) o[k] = extra[k];
+  return new THREE.MeshLambertMaterial(o);
+}
+
+function makeShihu() {
+  var g = new THREE.Group();
+  var fur = canvasTexture(128, 128, function (ctx, w, h) {
+    ctx.fillStyle = '#b98d55'; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = '#3b2816';
+    for (var i = 0; i < 26; i++) {
+      ctx.beginPath();
+      ctx.ellipse(Math.random() * w, Math.random() * h, 4 + Math.random() * 5, 3 + Math.random() * 3, Math.random() * PI, 0, PI * 2);
+      ctx.fill();
+    }
+  });
+  var furMat = lam(0xffffff, { map: fur });
+  var body = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.45, 1.1), furMat);
+  body.position.y = 0.55; body.castShadow = true; g.add(body);
+  var head = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.42, 0.45), furMat);
+  head.position.set(0, 0.72, -0.72); head.castShadow = true; g.add(head);
+  var white = lam(0xf4efe2);
+  // 額頭兩條白色縱紋
+  for (var s = -1; s <= 1; s += 2) {
+    var st = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.02, 0.32), white);
+    st.position.set(0.07 * s, 0.94, -0.72); g.add(st);
+  }
+  var muzzle = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.18, 0.12), white);
+  muzzle.position.set(0, 0.64, -0.98); g.add(muzzle);
+  var earMat = lam(0x2c1d10);
+  for (var e = -1; e <= 1; e += 2) {
+    var ear = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.24, 4), earMat);
+    ear.position.set(0.17 * e, 1.04, -0.66); g.add(ear);
+    // 耳後白斑
+    var spot = new THREE.Mesh(new THREE.CircleGeometry(0.055, 10), new THREE.MeshBasicMaterial({ color: 0xf4efe2 }));
+    spot.position.set(0.17 * e, 1.02, -0.58); g.add(spot);
+    var eye = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), new THREE.MeshBasicMaterial({ color: 0xc8ff7a }));
+    eye.position.set(0.12 * e, 0.8, -0.95); g.add(eye);
+  }
+  var tail = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.8, 6), lam(0x8a6538));
+  tail.position.set(0, 0.62, 0.9); tail.rotation.x = 1.0; g.add(tail);
+  var legs = [];
+  var legMat = lam(0x9c7444);
+  var lp = [[-0.18, -0.38], [0.18, -0.38], [-0.18, 0.38], [0.18, 0.38]];
+  for (var i = 0; i < 4; i++) {
+    var lg = new THREE.Group();
+    lg.position.set(lp[i][0], 0.4, lp[i][1]);
+    var leg = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.4, 6), legMat);
+    leg.position.y = -0.2; lg.add(leg); g.add(lg); legs.push(lg);
+  }
+  g.userData.legs = legs;
+  return g;
+}
+
+function makeFarmer() {
+  var g = new THREE.Group();
+  var body = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.4, 1.2, 8), lam(0x4a5f86));
+  body.position.y = 0.9; body.castShadow = true; g.add(body);
+  var legs = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.4, 8), lam(0x2e2a26));
+  legs.position.y = 0.2; g.add(legs);
+  var head = new THREE.Mesh(new THREE.SphereGeometry(0.24, 10, 8), lam(0xd9a77c));
+  head.position.y = 1.72; g.add(head);
+  // 斗笠
+  var hat = new THREE.Mesh(new THREE.ConeGeometry(0.62, 0.32, 14), lam(0xd8c08a));
+  hat.position.y = 1.98; hat.castShadow = true; g.add(hat);
+  var lamp = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.3, 8), new THREE.MeshBasicMaterial({ color: 0xffd27a }));
+  lamp.rotation.z = PI / 2; lamp.position.set(0.45, 1.05, 0); g.add(lamp);
+  var sweep = new THREE.Group(); g.add(sweep);
+  var cone = new THREE.Mesh(coneGeo, coneMat);
+  cone.position.y = 0.06; sweep.add(cone);
+  var ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.position.y = 0.05; g.add(ring);
+  var alertSp = makeTextSprite('!', '#ff7a6e');
+  alertSp.position.y = 2.7; alertSp.visible = false; g.add(alertSp);
+  g.userData = { sweep: sweep, ring: ring, alert: alertSp };
+  return g;
+}
+
+function makeTextSprite(txt, color) {
+  var t = canvasTexture(64, 64, function (ctx) {
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(32, 32, 28, 0, PI * 2); ctx.fill();
+    ctx.fillStyle = '#1c1a10'; ctx.font = 'bold 44px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(txt, 32, 34);
+  });
+  var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false }));
+  sp.scale.set(0.8, 0.8, 0.8);
+  return sp;
+}
+
+function makeMouse() {
+  var g = new THREE.Group();
+  var b = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), lam(0x8b8378));
+  b.scale.set(1, 0.8, 1.4); b.position.y = 0.18; g.add(b);
+  for (var s = -1; s <= 1; s += 2) {
+    var ear = new THREE.Mesh(new THREE.CircleGeometry(0.08, 8), lam(0xc99a90, { side: THREE.DoubleSide }));
+    ear.position.set(0.09 * s, 0.36, -0.15); g.add(ear);
+    var eye = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), new THREE.MeshBasicMaterial({ color: 0xff8a7a }));
+    eye.position.set(0.07 * s, 0.24, -0.27); g.add(eye);
+  }
+  var tail = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.02, 0.5, 4), lam(0xc99a90));
+  tail.rotation.x = PI / 2 - 0.3; tail.position.set(0, 0.12, 0.45); g.add(tail);
+  var halo = new THREE.Mesh(new THREE.RingGeometry(0.45, 0.55, 24), new THREE.MeshBasicMaterial({ color: 0x8fd694, transparent: true, opacity: 0.5, depthWrite: false }));
+  halo.rotation.x = -PI / 2; halo.position.y = 0.04; g.add(halo);
+  return g;
+}
+
+var cardTex = [];
+function makeCard(idx) {
+  if (!cardTex[idx]) {
+    cardTex[idx] = canvasTexture(128, 170, function (ctx, w, h) {
+      ctx.fillStyle = '#18223f'; ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = '#f3e6b8'; ctx.lineWidth = 6; ctx.strokeRect(4, 4, w - 8, h - 8);
+      drawMoon(ctx, w / 2, h / 2, 42, PH[idx].a, { outline: true });
+    });
+  }
+  var m = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.2), new THREE.MeshBasicMaterial({ map: cardTex[idx], side: THREE.DoubleSide }));
+  var g = new THREE.Group();
+  m.position.y = 1.1; g.add(m);
+  var halo = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.68, 24), new THREE.MeshBasicMaterial({ color: 0xf3e6b8, transparent: true, opacity: 0.5, depthWrite: false }));
+  halo.rotation.x = -PI / 2; halo.position.y = 0.04; g.add(halo);
+  g.userData.card = m;
+  return g;
+}
+
+var coneGeo, ringGeo;
+var CONE_LEN = 6.5, CONE_HALF = 0.42;
+var BUSH_POS = [[-6, 10], [6, 10], [0, 4], [-12, 0], [12, 0], [-4, -4], [4, -8], [-14, -8], [14, -6], [-8, -12], [10, -16], [0, -14], [-17, -14], [17, 6], [-17, 4], [8, 4], [-9, 6], [16, -16], [-3, -19]];
+var TREE_POS = [[-18, 12], [18, 13], [-11, 15], [12, 15], [-20, -4], [20, -10], [-6, -21], [14, -20], [-14, -20], [3, -3], [-2, 9]];
+var MICE_POS = [[-16, -10], [16, -12], [-4, -17], [10, 4], [-14, 6], [5, -11], [18, -2], [-10, -16], [2, -6], [-6, 2]];
+var ROUTES = [
+  { pts: [[-13, -2], [13, -2]], speed: 1.7 },
+  { pts: [[-8, -14], [8, -14], [8, -7], [-8, -7]], speed: 1.6 },
+  { pts: [[15, 9], [15, -15]], speed: 1.8 },
+  { pts: [[-15, 8], [-15, -15]], speed: 1.6 }
+];
+
+function buildWorld() {
+  renderer = new THREE.WebGLRenderer({ canvas: canvas3d, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x05070f);
+  scene.fog = new THREE.Fog(0x05070f, 22, 52);
+  camera = new THREE.PerspectiveCamera(50, 1, 0.1, 200);
+
+  hemi = new THREE.HemisphereLight(0x9fb4ff, 0x1c2a1c, 0.3); scene.add(hemi);
+  moonLight = new THREE.DirectionalLight(0xd2ddff, 0.6);
+  moonLight.position.set(-14, 22, -10);
+  moonLight.castShadow = true;
+  moonLight.shadow.mapSize.set(1024, 1024);
+  var sc = moonLight.shadow.camera; sc.left = -28; sc.right = 28; sc.top = 28; sc.bottom = -28; sc.near = 1; sc.far = 70;
+  scene.add(moonLight); scene.add(moonLight.target);
+
+  coneGeo = new THREE.CircleGeometry(CONE_LEN, 20, -CONE_HALF, CONE_HALF * 2);
+  coneGeo.rotateX(-PI / 2);
+  coneMat = new THREE.MeshBasicMaterial({ color: 0xffc766, transparent: true, opacity: 0.32, depthWrite: false, blending: THREE.AdditiveBlending });
+  ringGeo = new THREE.RingGeometry(0.94, 1, 64); ringGeo.rotateX(-PI / 2);
+  ringMat = new THREE.MeshBasicMaterial({ color: 0xdfe6ff, transparent: true, opacity: 0.35, depthWrite: false });
+
+  // 地面
+  var groundTex = canvasTexture(256, 256, function (ctx, w, h) {
+    ctx.fillStyle = '#35553a'; ctx.fillRect(0, 0, w, h);
+    for (var i = 0; i < 900; i++) {
+      ctx.fillStyle = Math.random() < 0.5 ? 'rgba(20,40,22,0.5)' : 'rgba(80,110,70,0.35)';
+      ctx.fillRect(Math.random() * w, Math.random() * h, 2, 3);
+    }
+  });
+  groundTex.wrapS = groundTex.wrapT = THREE.RepeatWrapping; groundTex.repeat.set(10, 10);
+  var ground = new THREE.Mesh(new THREE.PlaneGeometry(70, 70), lam(0xffffff, { map: groundTex }));
+  ground.rotation.x = -PI / 2; ground.receiveShadow = true; scene.add(ground);
+
+  // 稻田
+  var paddyTex = canvasTexture(64, 64, function (ctx, w, h) {
+    ctx.fillStyle = '#2f5b4a'; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = '#5f8f4f';
+    for (var y = 2; y < h; y += 8) for (var x = 2; x < w; x += 8) ctx.fillRect(x, y, 3, 3);
+  });
+  paddyTex.wrapS = paddyTex.wrapT = THREE.RepeatWrapping; paddyTex.repeat.set(3, 2);
+  var paddies = [[-8, -9, 8, 6], [9, -10, 7, 7], [-6, 4, 7, 5], [9, 7, 6, 5]];
+  for (var p = 0; p < paddies.length; p++) {
+    var pd = new THREE.Mesh(new THREE.PlaneGeometry(paddies[p][2], paddies[p][3]), lam(0xffffff, { map: paddyTex }));
+    pd.rotation.x = -PI / 2; pd.position.set(paddies[p][0], 0.02, paddies[p][1]); pd.receiveShadow = true; scene.add(pd);
+  }
+  // 田埂小路
+  var path = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 40), lam(0x5d4b35));
+  path.rotation.x = -PI / 2; path.position.set(0.5, 0.015, -2); path.receiveShadow = true; scene.add(path);
+
+  // 竹林（起點與終點）
+  var bambooMat = lam(0x4f8a3c), leafMat = lam(0x2f6a33);
+  for (var i = 0; i < 70; i++) {
+    var bx = -24 + Math.random() * 48, bz = 19.5 + Math.random() * 6;
+    if (Math.abs(bx) < 2.6 && bz < 22) continue;
+    var hgt = 4 + Math.random() * 3;
+    var stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, hgt, 5), bambooMat);
+    stalk.position.set(bx, hgt / 2, bz); stalk.rotation.z = (Math.random() - 0.5) * 0.15; stalk.castShadow = true; scene.add(stalk);
+    if (i % 3 === 0) {
+      var lf = new THREE.Mesh(new THREE.IcosahedronGeometry(0.9, 0), leafMat);
+      lf.position.set(bx, hgt - 0.3, bz); lf.scale.set(1, 0.5, 1); scene.add(lf);
+    }
+  }
+  exitRing = new THREE.Mesh(new THREE.RingGeometry(1.8, 2.2, 40), new THREE.MeshBasicMaterial({ color: 0x8fd694, transparent: true, opacity: 0.6, depthWrite: false }));
+  exitRing.rotation.x = -PI / 2; exitRing.position.set(0, 0.05, 18); scene.add(exitRing);
+
+  // 樹
+  var trunkMat = lam(0x4b3622), crownMat = lam(0x24502c);
+  for (var t = 0; t < TREE_POS.length; t++) {
+    var tg = new THREE.Group();
+    var trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.3, 2.2, 6), trunkMat);
+    trunk.position.y = 1.1; trunk.castShadow = true; tg.add(trunk);
+    var crown = new THREE.Mesh(new THREE.IcosahedronGeometry(1.6, 0), crownMat);
+    crown.position.y = 3; crown.castShadow = true; tg.add(crown);
+    tg.position.set(TREE_POS[t][0], 0, TREE_POS[t][1]); scene.add(tg);
+    trees.push({ x: TREE_POS[t][0], z: TREE_POS[t][1], r: 0.7 });
+  }
+  // 草叢（可以躲）
+  var bushMat = lam(0x1f4d2b);
+  for (var b = 0; b < BUSH_POS.length; b++) {
+    var bg = new THREE.Group();
+    for (var k = 0; k < 3; k++) {
+      var blob = new THREE.Mesh(new THREE.DodecahedronGeometry(0.75 + Math.random() * 0.3, 0), bushMat);
+      blob.position.set((k - 1) * 0.6, 0.55, (Math.random() - 0.5) * 0.6);
+      blob.scale.y = 0.75; blob.castShadow = true; bg.add(blob);
+    }
+    bg.position.set(BUSH_POS[b][0], 0, BUSH_POS[b][1]); scene.add(bg);
+    bushes.push({ x: BUSH_POS[b][0], z: BUSH_POS[b][1], r: 1.35 });
+  }
+  // 農舍
+  var house = new THREE.Group();
+  var wall = new THREE.Mesh(new THREE.BoxGeometry(5, 2.6, 3.6), lam(0x9a8f7c));
+  wall.position.y = 1.3; wall.castShadow = true; house.add(wall);
+  var roof = new THREE.Mesh(new THREE.ConeGeometry(3.9, 1.6, 4), lam(0x7a3b2c));
+  roof.position.y = 3.4; roof.rotation.y = PI / 4; roof.scale.z = 0.75; roof.castShadow = true; house.add(roof);
+  var win = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.7), new THREE.MeshBasicMaterial({ color: 0xffc766 }));
+  win.position.set(0, 1.5, 1.81); house.add(win);
+  house.position.set(-18, 0, -18); house.rotation.y = 0.5; scene.add(house);
+  trees.push({ x: -18, z: -18, r: 3 });
+  // 圍籬
+  var postMat = lam(0x5a4632);
+  for (var f = -24; f <= 24; f += 3) {
+    var p1 = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.9, 0.15), postMat); p1.position.set(f, 0.45, -24); scene.add(p1);
+    var p2 = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.9, 0.15), postMat); p2.position.set(-24, 0.45, f); scene.add(p2);
+    var p3 = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.9, 0.15), postMat); p3.position.set(24, 0.45, f); scene.add(p3);
+  }
+
+  player = makeShihu(); scene.add(player);
+  nightVision = new THREE.PointLight(0xfff0d0, 0.9, 8, 1.6);
+  nightVision.position.set(0, 2.2, 0); player.add(nightVision);
+  player.position.set(0, 0, 17);
+
+  setNight(0.02);
+  onResize();
+}
+
+function setNight(b) {
+  hemi.intensity = 0.07 + 0.5 * b;
+  moonLight.intensity = 0.02 + 0.95 * b;
+  moonLight.castShadow = b > 0.12;
+  var dark = new THREE.Color(0x04060d), lit = new THREE.Color(0x24375e);
+  var col = dark.clone().lerp(lit, b);
+  scene.background.copy(col);
+  scene.fog.color.copy(col);
+}
+
+function onResize() {
+  var w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', function () { if (renderer) onResize(); });
+
+/* ========== 輸入 ========== */
+var keys = {};
+var joyVec = { x: 0, y: 0 };
+var isTouch = false;
+try { isTouch = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window); } catch (e) {}
+window.addEventListener('keydown', function (e) {
+  var k = e.key;
+  keys[k.toLowerCase()] = true;
+  if (G.mode === 'sneak' && (k === 'ArrowUp' || k === 'ArrowDown' || k === 'ArrowLeft' || k === 'ArrowRight' || k === ' ')) e.preventDefault();
+});
+window.addEventListener('keyup', function (e) { keys[e.key.toLowerCase()] = false; });
+window.addEventListener('blur', function () { keys = {}; });
+(function setupJoy() {
+  var joy = $('joy'), knob = $('joyKnob'), active = null;
+  function move(e) {
+    var r = joy.getBoundingClientRect();
+    var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    var dx = e.clientX - cx, dy = e.clientY - cy;
+    var max = r.width / 2 - 10;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    if (d > max) { dx = dx / d * max; dy = dy / d * max; }
+    knob.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+    joyVec.x = dx / max; joyVec.y = dy / max;
+  }
+  joy.addEventListener('pointerdown', function (e) { active = e.pointerId; joy.setPointerCapture(e.pointerId); move(e); e.preventDefault(); });
+  joy.addEventListener('pointermove', function (e) { if (active === e.pointerId) move(e); });
+  function end(e) { if (active !== e.pointerId) return; active = null; joyVec.x = 0; joyVec.y = 0; knob.style.transform = ''; }
+  joy.addEventListener('pointerup', end);
+  joy.addEventListener('pointercancel', end);
+})();
+window.addEventListener('touchstart', function () { if (!isTouch) { isTouch = true; if (G.mode === 'sneak') $('joy').hidden = false; } }, { passive: true });
+
+/* ========== 遊戲狀態 ========== */
+var G = {
+  mode: 'title', level: null, run: null,
+  meter: 0, collected: 0, need: 0, hidden: false, t: 0, done: false
+};
+var LV = {
+  1: { title: '收集月相卡片', farmers: 1, helper: true },
+  2: { title: '看月亮，找新月', clueType: 'moon', days: [8, 15], mice: 4, farmers: 2, helper: true },
+  3: { title: '看農曆，找新月', clueType: 'lunar', days: [10, 18, 5], mice: 4, farmers: 2, helper: true },
+  4: { title: '上弦？下弦？', clueType: 'moon', days: [22, 25], mice: 5, farmers: 3, helper: false },
+  5: { title: '月亮什麼時候出來', mice: 3, farmers: 2, helper: true }
+};
+
+function startSneak(cfg) {
+  G.run = cfg;
+  G.mode = 'sneak'; G.meter = 0; G.collected = 0; G.done = false; G.t = 0; G.hidden = false;
+  setNight(cfg.b);
+  // 清除舊物件
+  var i;
+  for (i = 0; i < farmers.length; i++) scene.remove(farmers[i].obj);
+  for (i = 0; i < targets.length; i++) scene.remove(targets[i].obj);
+  farmers = []; targets = [];
+  player.position.set(0, 0, 17); player.rotation.y = 0;
+  // 巡田農夫
+  var visR = 1.2 + 12 * cfg.b;
+  for (i = 0; i < cfg.farmers; i++) {
+    var rt = ROUTES[i];
+    var obj = makeFarmer();
+    obj.position.set(rt.pts[0][0], 0, rt.pts[0][1]);
+    obj.userData.ring.scale.set(visR, 1, visR);
+    scene.add(obj);
+    farmers.push({ obj: obj, route: rt, wp: 1, wait: 0, yaw: 0, phase: Math.random() * 6, speed: rt.speed * (cfg.slow ? 0.6 : 1), visR: visR });
+  }
+  // 目標
+  if (cfg.cards) {
+    var order = shuffle([0, 1, 2, 3, 4, 5, 6, 7]);
+    var spots = shuffle(MICE_POS.slice()).slice(0, 8);
+    for (i = 0; i < 8; i++) {
+      var c = makeCard(order[i]);
+      c.position.set(spots[i][0], 0, spots[i][1]);
+      scene.add(c);
+      targets.push({ obj: c, x: spots[i][0], z: spots[i][1], got: false, idx: order[i] });
+    }
+    G.need = 8;
+  } else {
+    var ms = shuffle(MICE_POS.slice()).slice(0, cfg.mice);
+    for (i = 0; i < ms.length; i++) {
+      var m = makeMouse();
+      m.position.set(ms[i][0], 0, ms[i][1]);
+      scene.add(m);
+      targets.push({ obj: m, x: ms[i][0], z: ms[i][1], got: false, ph: Math.random() * 6 });
+    }
+    G.need = ms.length;
+  }
+  exitRing.visible = false;
+  // HUD
+  $('hudLevel').textContent = '第 ' + G.level + ' 關';
+  updateCount();
+  drawSky(cfg.skyAngle, cfg.moonUp);
+  $('hudHelp').disabled = !LV[G.level].helper;
+  $('hudHelp').textContent = LV[G.level].helper ? '月相小幫手' : '這關不能用小幫手';
+  hidePanel();
+  setHud(true);
+  setTip(cfg.cards ? '找到發光的月相卡片，避開手電筒！' : '抓到田鼠，避開手電筒，躲進草叢！');
+}
+function setTip(t, cls) { var tp = $('hudTip'); tp.textContent = t; tp.className = cls || ''; }
+function updateCount() {
+  var noun = G.run && G.run.cards ? '卡片' : '田鼠';
+  $('hudCount').textContent = noun + ' ' + G.collected + '/' + G.need;
+}
+function drawSky(angle, up) {
+  var c = $('hudSkyCanvas');
+  c.width = 56 * DPR; c.height = 56 * DPR;
+  var ctx = c.getContext('2d');
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.fillStyle = '#060a18'; ctx.fillRect(0, 0, 56, 56);
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  var st = [[8, 10], [45, 8], [30, 46], [12, 40], [48, 38], [22, 20]];
+  for (var i = 0; i < st.length; i++) ctx.fillRect(st[i][0], st[i][1], 1.2, 1.2);
+  var il = illumOf(angle);
+  var txt;
+  if (!up) txt = '月亮還在地平線下，看不到';
+  else if (il < 0.03) txt = '新月：看不到月亮';
+  else { drawMoon(ctx, 28, 28, 18, angle, { glow: true, darkColor: '#141a30' }); txt = '今晚的月亮'; }
+  $('hudSkyText').textContent = txt;
+}
+
+function update(dt) {
+  G.t += dt;
+  var i;
+  // 目標動畫
+  for (i = 0; i < targets.length; i++) {
+    var tg = targets[i];
+    if (tg.got) continue;
+    if (G.run.cards) {
+      tg.obj.userData.card.rotation.y += dt * 1.2;
+      tg.obj.userData.card.position.y = 1.1 + Math.sin(G.t * 2 + i) * 0.12;
+    } else {
+      tg.ph += dt * 0.8;
+      tg.obj.position.x = tg.x + Math.cos(tg.ph) * 0.8;
+      tg.obj.position.z = tg.z + Math.sin(tg.ph) * 0.8;
+      tg.obj.rotation.y = -tg.ph + PI;
+    }
+  }
+  exitRing.material.opacity = 0.4 + 0.3 * Math.sin(G.t * 4);
+  if (G.mode !== 'sneak' || G.done) return;
+
+  // 玩家移動（畫面向上 = 往前）
+  var mx = 0, mz = 0;
+  if (keys['arrowleft'] || keys['a']) mx -= 1;
+  if (keys['arrowright'] || keys['d']) mx += 1;
+  if (keys['arrowup'] || keys['w']) mz -= 1;
+  if (keys['arrowdown'] || keys['s']) mz += 1;
+  mx += joyVec.x; mz += joyVec.y;
+  var len = Math.sqrt(mx * mx + mz * mz);
+  var moving = len > 0.15;
+  if (len > 1) { mx /= len; mz /= len; }
+  var sp = 4.4;
+  var p = player.position;
+  if (moving) {
+    p.x += mx * sp * dt; p.z += mz * sp * dt;
+    var targetYaw = Math.atan2(-mx, -mz);
+    var dy = targetYaw - player.rotation.y;
+    while (dy > PI) dy -= PI * 2;
+    while (dy < -PI) dy += PI * 2;
+    player.rotation.y += dy * Math.min(1, dt * 12);
+  }
+  p.x = clamp(p.x, -23, 23); p.z = clamp(p.z, -23, 19);
+  for (i = 0; i < trees.length; i++) {
+    var tdx = p.x - trees[i].x, tdz = p.z - trees[i].z, td = Math.sqrt(tdx * tdx + tdz * tdz);
+    if (td < trees[i].r + 0.4 && td > 0.001) { var push = (trees[i].r + 0.4) / td; p.x = trees[i].x + tdx * push; p.z = trees[i].z + tdz * push; }
+  }
+  var legs = player.userData.legs;
+  for (i = 0; i < 4; i++) legs[i].rotation.x = moving ? Math.sin(G.t * 14 + (i % 2 === 0 ? 0 : PI) + (i > 1 ? PI : 0)) * 0.6 : 0;
+
+  // 躲在草叢裡？
+  var hid = false;
+  for (i = 0; i < bushes.length; i++) {
+    var bx = p.x - bushes[i].x, bz = p.z - bushes[i].z;
+    if (bx * bx + bz * bz < bushes[i].r * bushes[i].r) { hid = true; break; }
+  }
+  if (hid !== G.hidden) {
+    G.hidden = hid;
+    if (hid) setTip('躲在草叢裡，月光照不到你', 'hide-tip');
+    else setTip(G.collected >= G.need ? '快回到竹林！' : (G.run.cards ? '找到發光的月相卡片，避開手電筒！' : '抓到田鼠，避開手電筒，躲進草叢！'));
+  }
+
+  // 抓田鼠 / 撿卡片
+  for (i = 0; i < targets.length; i++) {
+    var tg2 = targets[i];
+    if (tg2.got) continue;
+    var ox = p.x - tg2.obj.position.x, oz = p.z - tg2.obj.position.z;
+    if (ox * ox + oz * oz < 1.1) {
+      tg2.got = true; tg2.obj.visible = false; G.collected++;
+      updateCount();
+      if (G.collected >= G.need) { exitRing.visible = true; setTip('全部到手！快回到竹林（綠色圓圈）'); }
+    }
+  }
+  if (G.collected >= G.need && p.z > 16 && Math.abs(p.x) < 3) { endSneak(true); return; }
+
+  // 農夫巡邏與偵測
+  var rate = 0;
+  for (i = 0; i < farmers.length; i++) {
+    var f = farmers[i], fo = f.obj, rt = f.route.pts;
+    var tgt = rt[f.wp];
+    var fx = tgt[0] - fo.position.x, fz = tgt[1] - fo.position.z, fd = Math.sqrt(fx * fx + fz * fz);
+    if (f.wait > 0) {
+      f.wait -= dt;
+    } else if (fd < 0.2) {
+      f.wp = (f.wp + 1) % rt.length; f.wait = 1.2;
+    } else {
+      fo.position.x += fx / fd * f.speed * dt; fo.position.z += fz / fd * f.speed * dt;
+      var want = Math.atan2(-fz, fx);
+      var dd = want - f.yaw;
+      while (dd > PI) dd -= PI * 2;
+      while (dd < -PI) dd += PI * 2;
+      f.yaw += dd * Math.min(1, dt * 3);
+    }
+    fo.rotation.y = f.yaw;
+    var sw = Math.sin(G.t * (f.wait > 0 ? 2.2 : 1.1) + f.phase) * (f.wait > 0 ? 0.9 : 0.35);
+    fo.userData.sweep.rotation.y = sw;
+    fo.position.y = Math.abs(Math.sin(G.t * 6 + f.phase)) * 0.05;
+
+    var dx = p.x - fo.position.x, dz = p.z - fo.position.z, dist = Math.sqrt(dx * dx + dz * dz);
+    var look = f.yaw + sw;
+    var lx = Math.cos(look), lz = -Math.sin(look);
+    var cosAng = dist > 0.001 ? (dx * lx + dz * lz) / dist : 1;
+    var seen = 0;
+    if (dist < CONE_LEN && cosAng > Math.cos(CONE_HALF)) seen += hid ? (dist < 2.2 ? 1.6 : 0) : 2.6;
+    if (!hid && dist < f.visR) seen += 1.4 * (1 - 0.5 * dist / f.visR);
+    if (dist < 1.2) seen += 3;
+    fo.userData.alert.visible = seen > 0;
+    rate += seen;
+  }
+  if (rate > 0) G.meter += rate * dt;
+  else G.meter = Math.max(0, G.meter - 0.35 * dt);
+  $('hudMeter').style.width = Math.min(100, G.meter * 100) + '%';
+  if (G.meter >= 1) endSneak(false);
+}
+
+var camPos = new THREE.Vector3(0, 14, 28);
+function updateCamera(dt) {
+  var portrait = window.innerHeight > window.innerWidth;
+  var tx, tz, h, back;
+  if (G.mode === 'sneak') {
+    tx = player.position.x; tz = player.position.z;
+    h = portrait ? 17 : 12.5; back = portrait ? 9 : 9.5;
+    camPos.lerp(new THREE.Vector3(tx, h, tz + back), Math.min(1, dt * 4));
+    camera.position.copy(camPos);
+    camera.lookAt(tx, 0, tz - 1.2);
+  } else {
+    var a = performance.now() * 0.00005;
+    camera.position.set(Math.sin(a) * 30, 15, Math.cos(a) * 30);
+    camera.lookAt(0, 0, 0);
+    camPos.copy(camera.position);
+  }
+}
+
+var lastT = performance.now();
+function loop() {
+  requestAnimationFrame(loop);
+  var now = performance.now();
+  var dt = Math.min(0.05, (now - lastT) / 1000);
+  lastT = now;
+  if (G.mode === 'sneak' || targets.length) update(dt);
+  updateCamera(dt);
+  renderer.render(scene, camera);
+}
+
+/* ========== 關卡流程 ========== */
+function goTitle() {
+  G.mode = 'title';
+  setHud(false);
+  setNight(0.35);
+  for (var i = 0; i < farmers.length; i++) farmers[i].obj.userData.alert.visible = false;
+  showPanel(function (p) {
+    var wrap = el('div', 'title-wrap');
+    var left = el('div');
+    left.style.display = 'flex'; left.style.flexDirection = 'column'; left.style.gap = '14px';
+    left.appendChild(el('div', 'eyebrow', '四年級自然 月亮單元 複習遊戲'));
+    left.appendChild(el('h1', '', '石虎月夜行'));
+    left.appendChild(el('p', '', '石虎是臺灣的保育類野生動物。牠白天躲在竹林裡，晚上才出來抓田鼠。牠很怕被人發現，所以最喜歡<b>最暗的夜晚</b>。'));
+    left.appendChild(el('p', 'mute small', '幫石虎看懂月亮，算出哪一天最暗，再悄悄溜進田裡吧！'));
+    var go = btn(store.done[1] ? '繼續冒險' : '開始冒險', 'primary', function () {
+      var next = 1;
+      for (var k = 1; k <= 5; k++) { if (!store.done[k]) { next = k; break; } next = 5; }
+      openLevel(next);
+    });
+    var r = el('div', 'row'); r.appendChild(go);
+    r.appendChild(btn('月相小幫手', '', function () { openHelper(false); }));
+    left.appendChild(r);
+    wrap.appendChild(left);
+    var right = el('div', 'levels');
+    for (var id = 1; id <= 5; id++) {
+      (function (id) {
+        var b = el('button', 'lvl-btn' + (store.done[id] ? ' done' : ''), '<span class="num">' + id + '</span><span>' + LV[id].title + '</span>');
+        b.type = 'button';
+        b.disabled = !unlocked(id);
+        b.addEventListener('click', function () { openLevel(id); });
+        right.appendChild(b);
+      })(id);
+    }
+    if (store.done[5]) {
+      var sb = el('button', 'lvl-btn', '<span class="num">總</span><span>月相總複習</span>');
+      sb.type = 'button'; sb.addEventListener('click', showSummary); right.appendChild(sb);
+    }
+    wrap.appendChild(right);
+    p.appendChild(wrap);
+  }, true);
+}
+
+function openLevel(id) {
+  G.level = id;
+  G.mode = 'brief';
+  setHud(false);
+  if (id === 1) briefL1();
+  else if (id === 5) briefL5();
+  else briefCal(id);
+}
+
+function levelHeader(p, id) {
+  p.appendChild(el('div', 'eyebrow', '第 ' + id + ' 關'));
+  p.appendChild(el('h2', '', LV[id].title));
+}
+
+/* ---- 第 1 關：收集與排列月相卡片 ---- */
+function briefL1() {
+  showPanel(function (p) {
+    levelHeader(p, 1);
+    p.appendChild(el('p', '', '月相卡片被風吹散在田裡了！把 <b>8 張月相卡片</b>全部撿回來，再回到竹林，把它們排成正確的順序。'));
+    p.appendChild(el('div', 'note', '今晚是<b>新月</b>，是一個月裡最暗的夜晚，很適合練習潛入。小心巡田農夫的<b>手電筒</b>（黃色扇形）！'));
+    p.appendChild(el('p', 'mute small', isTouch ? '用左下角的搖桿移動。' : '用方向鍵或 W A S D 移動。'));
+    var r = el('div', 'row end');
+    r.appendChild(btn('回選單', '', goTitle));
+    r.appendChild(btn('出發', 'primary', function () {
+      startSneak({ b: 0.02, skyAngle: 0, moonUp: true, farmers: 1, cards: true, slow: true });
+    }));
+    p.appendChild(r);
+  });
+}
+
+function sortCards() {
+  G.mode = 'sort';
+  setHud(false);
+  var placed = 0;
+  var msg;
+  showPanel(function (p) {
+    levelHeader(p, 1);
+    p.appendChild(el('p', '', '從<b>新月</b>開始，依照月亮變化的順序，一張一張點選卡片。'));
+    var slots = el('div', 'slots');
+    var slotEls = [];
+    for (var i = 0; i < 8; i++) {
+      var s = el('div', 'slot', i === 0 ? '從新月開始' : String(i + 1));
+      slots.appendChild(s); slotEls.push(s);
+    }
+    p.appendChild(el('div', 'small mute', '月相順序'));
+    p.appendChild(slots);
+    p.appendChild(el('div', 'small mute', '撿到的卡片'));
+    var pool = el('div', 'pool');
+    var order = shuffle([0, 1, 2, 3, 4, 5, 6, 7]);
+    for (var j = 0; j < 8; j++) {
+      (function (idx) {
+        var c = el('button', 'pcard');
+        c.type = 'button';
+        c.setAttribute('aria-label', '月相卡片');
+        c.appendChild(moonCanvas(64, PH[idx].a));
+        c.addEventListener('click', function () {
+          if (idx === placed) {
+            c.classList.add('used');
+            var s = slotEls[placed];
+            s.innerHTML = ''; s.className = 'slot filled';
+            s.appendChild(moonCanvas(64, PH[idx].a));
+            s.appendChild(el('span', '', PH[idx].n));
+            placed++;
+            msg.className = 'note good';
+            msg.innerHTML = placed < 8 ? '對！這是<b>' + PH[idx].n + '</b>。下一張是哪一個呢？' : '全部排好了！';
+            if (placed === 8) setTimeout(function () { clearLevel(1); }, 600);
+          } else {
+            c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+            msg.className = 'note bad';
+            msg.innerHTML = sortHint(placed, idx);
+          }
+        });
+        pool.appendChild(c);
+      })(order[j]);
+    }
+    p.appendChild(pool);
+    msg = el('div', 'note', '提示：新月時看不到月亮，所以卡片上只有虛線圓圈。');
+    p.appendChild(msg);
+  }, true);
+}
+function sortHint(placed, wrong) {
+  if (placed === 0) return '第一張是新月：月亮看起來完全不亮，只有虛線。';
+  var want = PH[placed].a, got = PH[wrong].a;
+  if (want < 180 && got > 180 && Math.abs((360 - got) - want) < 1) return '亮的方向反了！新月到滿月這段時間，是月亮的<b>右邊</b>先亮起來。';
+  if (want > 180 && got < 180 && Math.abs((360 - got) - want) < 1) return '亮的方向反了！滿月之後，月亮右邊先變暗，剩下<b>左邊</b>亮。';
+  if (want <= 180) return '新月之後，亮的部分會<b>一天比一天大</b>，直到滿月。';
+  return '滿月之後，亮的部分會<b>一天比一天小</b>，最後回到新月。';
+}
+
+/* ---- 第 2 到 4 關：月曆推算 ---- */
+function briefCal(id) {
+  var cfg = LV[id];
+  if (!G.calDay || G.calLevel !== id) { G.calDay = pick(cfg.days); G.calLevel = id; }
+  showCalendar(id, null);
+}
+function clueBlock(id, d) {
+  var cfg = LV[id];
+  var box = el('div', 'clue');
+  if (cfg.clueType === 'moon') {
+    box.appendChild(moonCanvas(96, angleOfDay(d), '#060a18'));
+    var t = el('div', '');
+    t.appendChild(el('p', '', '石虎今天晚上抬頭看，月亮長這樣。'));
+    if (id === 4) t.appendChild(el('p', 'mute small', '這一關沒有小幫手，要自己看清楚亮的是哪一邊。'));
+    else t.appendChild(el('p', 'mute small', '不知道是什麼月相？打開「月相小幫手」查一查。'));
+    box.appendChild(t);
+  } else {
+    var big = el('div', '', '<div class="small mute">今天是</div><div style="font-family:var(--display);font-size:40px;color:var(--moon);line-height:1.1">農曆' + lunarName(d) + '</div>');
+    box.appendChild(big);
+    box.appendChild(el('p', 'mute small', '遊戲裡的農曆，每個月都有 30 天。'));
+  }
+  return box;
+}
+function showCalendar(id, feedback) {
+  G.mode = 'plan';
+  setHud(false);
+  var d = G.calDay;
+  var sel = -1;
+  showPanel(function (p) {
+    levelHeader(p, id);
+    p.appendChild(clueBlock(id, d));
+    if (feedback) p.appendChild(feedback);
+    p.appendChild(el('p', '', '石虎要等到<b>最暗的夜晚</b>才出門。點選月曆上的那一天：'));
+    var cal = el('div', 'cal');
+    var weeks = ['今天起', '1 週後', '2 週後', '3 週後', '4 週後'];
+    var cells = [];
+    var pickedTxt = el('p', 'mute', '還沒有選日子。');
+    var goBtn = btn('就是這一晚，出發！', 'primary', function () {
+      if (sel < 0) return;
+      launchFromCalendar(id, d, sel);
+    });
+    goBtn.disabled = true;
+    for (var w = 0; w < 5; w++) {
+      cal.appendChild(el('div', 'wk', weeks[w]));
+      for (var k = 0; k < 7; k++) {
+        (function (n) {
+          var c = el('button', n === 0 ? 'today' : '', n === 0 ? '今天' : n + '<small>天後</small>');
+          c.type = 'button';
+          c.addEventListener('click', function () {
+            for (var q = 0; q < cells.length; q++) cells[q].classList.remove('sel');
+            c.classList.add('sel'); sel = n;
+            pickedTxt.innerHTML = n === 0 ? '你選了<b>今天晚上</b>。' : '你選了 <b>' + n + ' 天後</b>的晚上。';
+            goBtn.disabled = false;
+          });
+          cells.push(c); cal.appendChild(c);
+        })(w * 7 + k);
+      }
+    }
+    p.appendChild(cal);
+    p.appendChild(pickedTxt);
+    var r = el('div', 'row end');
+    r.appendChild(btn('回選單', '', goTitle));
+    if (LV[id].helper) r.appendChild(btn('月相小幫手', '', function () { openHelper(false); }));
+    r.appendChild(goBtn);
+    p.appendChild(r);
+  }, true);
+}
+function launchFromCalendar(id, d, n) {
+  var ld = lunarAfter(d, n);
+  var ang = angleOfDay(ld);
+  var il = illumOf(ang);
+  G.choice = { d: d, n: n, ld: ld, ok: isNewMoonDay(ld) };
+  startSneak({ b: il, skyAngle: ang, moonUp: true, mice: LV[id].mice, farmers: LV[id].farmers });
+}
+function calFeedback(id, caught) {
+  var c = G.choice, d = c.d, ld = c.ld;
+  var ph = PH[phaseIdxOfDay(ld)];
+  var il = illumOf(angleOfDay(ld));
+  var box = el('div', 'note bad');
+  var head = (c.n === 0 ? '今天晚上' : c.n + ' 天後') + '是<b>農曆' + lunarName(ld) + '</b>，月相是<b>' + ph.n + '</b>，月光' + brightWord(il) + '！';
+  var lead = caught ? '被發現了！' : '你成功溜回竹林，但只是運氣好。';
+  var hint = '';
+  var startPh = phaseIdxOfDay(d);
+  var mirrorD = Math.round(31.5 - d);
+  var misN = 31 - mirrorD;
+  if (id === 4 && Math.abs(c.n - misN) <= 2) {
+    hint = '你可能把<b>' + PH[startPh].n + '</b>看成<b>' + PH[phaseIdxOfDay(mirrorD)].n + '</b>了。看看今晚的月亮，亮的是<b>左邊</b>：左邊亮表示月亮正在變瘦，很快就是新月！';
+  } else if (startPh === 4 && c.n <= 6) {
+    hint = '滿月之後不會馬上變成新月。月亮會一天一天變瘦，大約 <b>2 週</b>後才是新月。';
+  } else if (LV[id].clueType === 'lunar') {
+    hint = '新月在農曆<b>初一</b>前後。從今天農曆' + lunarName(d) + '數到下個月的初一，一共要幾天？';
+  } else {
+    hint = '月相大約每 <b>7 天</b>變一個階段：新月、上弦月、滿月、下弦月，再回到新月。今晚是' + PH[startPh].n + '，要再過幾個 7 天才是新月？';
+  }
+  box.innerHTML = '<b>' + lead + '</b>' + head + '<br>' + hint;
+  return box;
+}
+
+/* ---- 第 5 關：月亮什麼時候升起 ---- */
+var L5_ROUNDS = [
+  { d: 8 },
+  { d: 22 }
+];
+var L5_OPTS = [
+  { t: '晚上 7 點到 10 點', h0: 19, h1: 22 },
+  { t: '凌晨 1 點到 4 點', h0: 25, h1: 28 }
+];
+function moonRiseHour(d) { return 6 + (d - 1) * 24 / 29.5; }
+function moonAt(d, h) {
+  var x = (((h - moonRiseHour(d)) % 24) + 24) % 24;
+  return { up: x < 12, f: x / 12, alt: x < 12 ? Math.sin(PI * x / 12) : 0 };
+}
+function windowBright(d, o) {
+  var il = illumOf(angleOfDay(d)), sum = 0, n = 0;
+  for (var h = o.h0; h <= o.h1; h += 0.5) { var m = moonAt(d, h); sum += m.up ? (0.5 + 0.5 * m.alt) : 0; n++; }
+  return il * sum / n;
+}
+function briefL5() {
+  G.l5round = 0;
+  showPanel(function (p) {
+    levelHeader(p, 5);
+    p.appendChild(el('p', '', '月亮和太陽一樣，每天從<b>東方升起、西方落下</b>。不同月相的月亮，升起的時間不一樣：'));
+    var t = el('div', 'rise-table');
+    var main = [0, 2, 4, 6];
+    for (var i = 0; i < 4; i++) {
+      var ph = PH[main[i]];
+      var c = el('div');
+      c.appendChild(moonCanvas(48, ph.a));
+      c.appendChild(el('b', '', ph.n));
+      c.appendChild(el('span', '', ph.rise + '<br>左右升起'));
+      t.appendChild(c);
+    }
+    p.appendChild(t);
+    p.appendChild(el('div', 'note', '月亮升起後，大約 <b>12 個小時</b>會落下。月亮還沒升起或已經落下的時候，天空就很暗。'));
+    p.appendChild(el('p', '', '這一關不選日子，而是要選<b>出門的時間</b>。共有 2 個晚上要過。'));
+    var r = el('div', 'row end');
+    r.appendChild(btn('回選單', '', goTitle));
+    r.appendChild(btn('開始', 'primary', function () { showTimeChoice(null); }));
+    p.appendChild(r);
+  });
+}
+function showTimeChoice(feedback) {
+  G.mode = 'plan';
+  setHud(false);
+  var rd = L5_ROUNDS[G.l5round];
+  var ph = PH[phaseIdxOfDay(rd.d)];
+  showPanel(function (p) {
+    levelHeader(p, 5);
+    p.appendChild(el('div', 'small mute', '第 ' + (G.l5round + 1) + ' 個晚上，共 2 個'));
+    var clue = el('div', 'clue');
+    clue.appendChild(moonCanvas(88, angleOfDay(rd.d), '#060a18'));
+    clue.appendChild(el('p', '', '今天是<b>農曆' + lunarName(rd.d) + '</b>，月相是<b>' + ph.n + '</b>。<br>石虎在哪一段時間出門，天空最暗？'));
+    p.appendChild(clue);
+    if (feedback) p.appendChild(feedback);
+    var opts = el('div', 'opts');
+    for (var i = 0; i < L5_OPTS.length; i++) {
+      (function (o) {
+        var b = el('button', 'opt', o.t);
+        b.type = 'button';
+        b.addEventListener('click', function () { showSkyDial(rd, o); });
+        opts.appendChild(b);
+      })(L5_OPTS[i]);
+    }
+    p.appendChild(opts);
+    var r = el('div', 'row end');
+    r.appendChild(btn('回選單', '', goTitle));
+    r.appendChild(btn('月相小幫手', '', function () { openHelper(true); }));
+    p.appendChild(r);
+  });
+}
+function dialCanvas(d, o) {
+  var W = 340, H = 190;
+  var c = makeCanvas(W, H);
+  c.style.maxWidth = '100%'; c.style.height = 'auto';
+  var ctx = c.getContext('2d');
+  var cx = W / 2, cy = H - 34, R = 130;
+  ctx.fillStyle = '#060a18'; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(169,180,212,0.45)'; ctx.setLineDash([4, 5]); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(cx, cy, R, PI, 0, false); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = '#1d3322'; ctx.fillRect(0, cy, W, H - cy);
+  ctx.fillStyle = '#a9b4d4'; ctx.font = '15px "Noto Sans TC", sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('東', cx - R, cy + 22); ctx.fillText('南', cx, cy + 22); ctx.fillText('西', cx + R, cy + 22);
+  var mid = (o.h0 + o.h1) / 2;
+  var m = moonAt(d, mid);
+  if (m.up) {
+    var ang = PI - m.f * PI;
+    var mx = cx + Math.cos(ang) * R, my = cy - Math.sin(ang) * R;
+    drawMoon(ctx, mx, my, 18, angleOfDay(d), { glow: true, darkColor: '#141a30' });
+  } else {
+    ctx.fillStyle = '#a9b4d4'; ctx.font = '16px "Noto Sans TC", sans-serif';
+    ctx.fillText('這段時間月亮在地平線下面', cx, cy - 60);
+  }
+  return c;
+}
+function showSkyDial(rd, o) {
+  var b = windowBright(rd.d, o);
+  var other = L5_OPTS[0] === o ? L5_OPTS[1] : L5_OPTS[0];
+  var ok = b <= windowBright(rd.d, other);
+  var m = moonAt(rd.d, (o.h0 + o.h1) / 2);
+  G.choice = { l5: true, d: rd.d, o: o, ok: ok, up: m.up };
+  showPanel(function (p) {
+    levelHeader(p, 5);
+    p.appendChild(el('p', '', '出門前，看看<b>' + o.t + '</b>的南方天空：'));
+    var wrap = el('div', ''); wrap.style.textAlign = 'center';
+    wrap.appendChild(dialCanvas(rd.d, o));
+    p.appendChild(wrap);
+    p.appendChild(el('p', 'mute small', m.up ? '月亮在天上，田裡會被月光照亮。' : '月亮還沒升起或已經落下，天空很暗。'));
+    var r = el('div', 'row end');
+    r.appendChild(btn('換一個時間', '', function () { showTimeChoice(null); }));
+    r.appendChild(btn('出發', 'primary', function () {
+      startSneak({ b: b, skyAngle: angleOfDay(rd.d), moonUp: m.up, mice: LV[5].mice, farmers: LV[5].farmers });
+    }));
+    p.appendChild(r);
+  });
+}
+function l5Feedback(caught) {
+  var c = G.choice;
+  var box = el('div', 'note bad');
+  var ph = PH[phaseIdxOfDay(c.d)];
+  var why = c.d < 15
+    ? ph.n + '大約<b>中午</b>升起、<b>半夜</b>落下，所以晚上 7 點到 10 點月亮還掛在天上。等月亮落下以後再出門吧！'
+    : ph.n + '大約<b>半夜</b>才升起，所以凌晨月亮正高高掛著。趁月亮還沒升起的時候出門吧！';
+  box.innerHTML = '<b>' + (caught ? '被發現了！' : '你成功溜回來，但只是運氣好。') + '</b>' + why;
+  return box;
+}
+
+/* ---- 潛入結束 ---- */
+function endSneak(win) {
+  G.done = true;
+  G.mode = 'result';
+  setHud(false);
+  var id = G.level;
+  if (id === 1) {
+    if (win) { sortCards(); return; }
+    showPanel(function (p) {
+      levelHeader(p, 1);
+      p.appendChild(el('div', 'note bad', '<b>被手電筒照到了！</b>就算是最暗的新月夜晚，也要避開手電筒的黃色光。躲進草叢可以擋住光線。'));
+      var r = el('div', 'row end');
+      r.appendChild(btn('回選單', '', goTitle));
+      r.appendChild(btn('再試一次', 'primary', briefL1));
+      p.appendChild(r);
+    });
+    return;
+  }
+  var c = G.choice;
+  if (c.ok) {
+    if (win) {
+      if (id === 5) {
+        if (G.l5round === 0) {
+          G.l5round = 1;
+          var fb = el('div', 'note good', '<b>成功！</b>上弦月大約中午升起、半夜落下，所以<b>後半夜</b>比較暗。換下一個晚上囉！');
+          showTimeChoice(fb);
+          return;
+        }
+        clearLevel(5);
+        return;
+      }
+      G.calDay = null;
+      clearLevel(id);
+      return;
+    }
+    showPanel(function (p) {
+      levelHeader(p, id);
+      p.appendChild(el('div', 'note good', '<b>你選的時間是對的！</b>天空很暗，只是不小心被手電筒照到了。'));
+      p.appendChild(el('p', 'mute small', '小技巧：農夫停下來的時候，手電筒會左右大範圍掃動，先躲進草叢等一下。'));
+      var r = el('div', 'row end');
+      r.appendChild(btn('回選單', '', goTitle));
+      r.appendChild(btn('再潛入一次', 'primary', function () {
+        if (id === 5) showSkyDial(L5_ROUNDS[G.l5round], c.o);
+        else launchFromCalendar(id, c.d, c.n);
+      }));
+      p.appendChild(r);
+    });
+    return;
+  }
+  if (id === 5) showTimeChoice(l5Feedback(!win));
+  else showCalendar(id, calFeedback(id, !win));
+}
+
+var CLEAR_TEXT = {
+  1: '月相的順序是：新月、眉形月、上弦月、盈凸月、滿月、虧凸月、下弦月、殘月，再回到新月。變化一輪大約 <b>29.5 天</b>，差不多一個月。',
+  2: '新月在農曆<b>初一</b>前後。這時月亮和太陽在同一個方向，被太陽照亮的那一半背對著地球，所以晚上看不到月亮。',
+  3: '農曆的日期跟著月相走：初一新月、初七八上弦月、十五六滿月、廿二三下弦月。看農曆就能推算月相！',
+  4: '在臺灣看月亮：<b>右邊亮</b>是月亮正在變胖（眉形月、上弦月、盈凸月）；<b>左邊亮</b>是月亮正在變瘦（虧凸月、下弦月、殘月）。',
+  5: '下弦月大約半夜才升起，所以<b>前半夜</b>比較暗；上弦月大約半夜落下，所以<b>後半夜</b>比較暗。月相不同，月亮出現的時間也不同。'
+};
+function clearLevel(id) {
+  store.done[id] = true; saveStore();
+  G.mode = 'clear';
+  setHud(false);
+  showPanel(function (p) {
+    p.appendChild(el('div', 'eyebrow', '第 ' + id + ' 關 過關'));
+    p.appendChild(el('h2', '', id === 1 ? '月相卡片全部排好了！' : '石虎吃飽了，平安回到竹林！'));
+    p.appendChild(el('div', 'note good', CLEAR_TEXT[id]));
+    var r = el('div', 'row end');
+    r.appendChild(btn('回選單', '', goTitle));
+    if (id < 5) r.appendChild(btn('下一關', 'primary', function () { openLevel(id + 1); }));
+    else r.appendChild(btn('看月相總複習', 'primary', showSummary));
+    p.appendChild(r);
+  });
+}
+
+function showSummary() {
+  G.mode = 'summary';
+  setHud(false);
+  showPanel(function (p) {
+    p.appendChild(el('div', 'eyebrow', '全部過關'));
+    p.appendChild(el('h2', '', '月相總複習'));
+    p.appendChild(el('p', '', '月亮本身不會發光，我們看到的是<b>被太陽照亮的那一半</b>。月亮繞著地球轉，我們看到亮的部分就跟著改變。'));
+    var g = el('div', 'sum-grid');
+    for (var i = 0; i < 8; i++) {
+      var c = el('div');
+      c.appendChild(moonCanvas(56, PH[i].a));
+      c.appendChild(el('b', '', PH[i].n));
+      c.appendChild(el('span', '', '農曆' + PH[i].days + (PH[i].rise ? '<br>' + PH[i].rise + '升起' : '')));
+      g.appendChild(c);
+    }
+    p.appendChild(g);
+    p.appendChild(el('div', 'note', '月相不是地球的影子造成的。地球的影子遮住月亮叫做<b>月食</b>，只有在滿月時偶爾發生。'));
+    var r = el('div', 'row end');
+    r.appendChild(btn('回選單', 'primary', goTitle));
+    p.appendChild(r);
+  }, true);
+}
+
+/* ========== 月相小幫手 ========== */
+var helpLayer = $('helpLayer'), helpPanel = $('helpPanel');
+var orbitAng = 90;
+function openHelper(fromL5) {
+  if (G.level && !LV[G.level].helper && (G.mode === 'sneak' || G.mode === 'plan')) return;
+  var wasSneak = G.mode === 'sneak';
+  if (wasSneak) G.pausedFrom = 'sneak', G.mode = 'paused';
+  helpPanel.innerHTML = '';
+  helpPanel.appendChild(el('div', 'eyebrow', '月相小幫手'));
+  helpPanel.appendChild(el('h2', '', '月亮為什麼會變樣子？'));
+  var top = el('div', 'helper-top');
+  var oc = makeCanvas(300, 300); oc.id = 'orbitCanvas';
+  top.appendChild(oc);
+  var view = el('div', 'helper-view');
+  var vc = makeCanvas(130, 130);
+  var nameEl = el('h3', '', '');
+  view.appendChild(el('div', 'small mute', '從臺灣看到的月亮'));
+  view.appendChild(vc);
+  view.appendChild(nameEl);
+  view.appendChild(el('p', 'small', '<b>拖曳</b>左邊圖裡的月亮，讓它繞著地球轉。'));
+  view.appendChild(el('p', 'small mute', '月亮自己不會發光。太陽永遠照亮月亮的一半，月亮轉到不同位置，我們從地球看到的亮面就不一樣。'));
+  top.appendChild(view);
+  helpPanel.appendChild(top);
+  helpPanel.appendChild(el('div', 'note small', '月相<b>不是</b>地球影子遮住造成的。在左圖中，地球的影子在背對太陽的那一邊，月亮平常不會走進去。'));
+  var grid = el('div', 'phase-grid');
+  for (var i = 0; i < 8; i++) {
+    (function (i) {
+      var c = el('button', 'phase-cell');
+      c.type = 'button';
+      c.appendChild(moonCanvas(52, PH[i].a));
+      c.appendChild(el('b', '', PH[i].n));
+      c.appendChild(el('span', '', '農曆' + PH[i].days + (PH[i].rise ? '<br>' + PH[i].rise + '升起' : '')));
+      c.addEventListener('click', function () { orbitAng = PH[i].a; redraw(); });
+      grid.appendChild(c);
+    })(i);
+  }
+  helpPanel.appendChild(grid);
+  var r = el('div', 'row end');
+  var closeB = btn('關閉', 'primary', function () {
+    helpLayer.hidden = true;
+    if (G.mode === 'paused') G.mode = 'sneak';
+  });
+  r.appendChild(closeB);
+  helpPanel.appendChild(r);
+
+  function redraw() {
+    var ctx = oc.getContext('2d');
+    var W = 300, cx = 150, cy = 150, R = 105;
+    ctx.clearRect(0, 0, W, W);
+    ctx.fillStyle = '#060a18'; ctx.fillRect(0, 0, W, W);
+    // 陽光
+    ctx.strokeStyle = 'rgba(255,199,102,0.35)'; ctx.lineWidth = 1.5;
+    for (var y = 20; y < W; y += 28) {
+      ctx.beginPath(); ctx.moveTo(W - 6, y); ctx.lineTo(W - 40, y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(W - 40, y); ctx.lineTo(W - 34, y - 4); ctx.moveTo(W - 40, y); ctx.lineTo(W - 34, y + 4); ctx.stroke();
+    }
+    ctx.fillStyle = '#ffc766'; ctx.font = '13px "Noto Sans TC", sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText('太陽光', W - 8, W - 8);
+    // 軌道
+    ctx.setLineDash([3, 5]); ctx.strokeStyle = 'rgba(169,180,212,0.5)';
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, PI * 2); ctx.stroke(); ctx.setLineDash([]);
+    // 地球
+    halfLit(ctx, cx, cy, 22, '#1d3d78', '#5fa0e8');
+    ctx.fillStyle = '#a9b4d4'; ctx.textAlign = 'center'; ctx.fillText('地球', cx, cy + 40);
+    // 月亮
+    var rad = orbitAng * PI / 180;
+    var mx = cx + Math.cos(rad) * R, my = cy - Math.sin(rad) * R;
+    halfLit(ctx, mx, my, 13, '#3a4060', '#f3e6b8');
+    ctx.fillText('月亮', mx, my + 28);
+    ctx.fillStyle = '#a9b4d4'; ctx.textAlign = 'left';
+    ctx.fillText('從北極上方往下看', 8, 18);
+    var vctx = vc.getContext('2d');
+    vctx.clearRect(0, 0, 130, 130);
+    vctx.fillStyle = '#060a18'; vctx.beginPath(); vctx.arc(65, 65, 64, 0, PI * 2); vctx.fill();
+    drawMoon(vctx, 65, 65, 48, orbitAng, { outline: true, glow: true });
+    var idx = Math.round(orbitAng / 45) % 8;
+    nameEl.textContent = PH[idx].n;
+  }
+  function halfLit(ctx, x, y, r, dark, light) {
+    ctx.beginPath(); ctx.arc(x, y, r, 0, PI * 2); ctx.fillStyle = dark; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x, y - r); ctx.arc(x, y, r, -PI / 2, PI / 2, false); ctx.closePath(); ctx.fillStyle = light; ctx.fill();
+  }
+  var dragging = false;
+  function setFromEvent(e) {
+    var rc = oc.getBoundingClientRect();
+    var x = (e.clientX - rc.left) * 300 / rc.width - 150, y = (e.clientY - rc.top) * 300 / rc.height - 150;
+    var a = Math.atan2(-y, x) * 180 / PI;
+    orbitAng = (a + 360) % 360;
+    redraw();
+  }
+  oc.addEventListener('pointerdown', function (e) { dragging = true; oc.setPointerCapture(e.pointerId); setFromEvent(e); });
+  oc.addEventListener('pointermove', function (e) { if (dragging) setFromEvent(e); });
+  oc.addEventListener('pointerup', function () { dragging = false; });
+  oc.addEventListener('pointercancel', function () { dragging = false; });
+  redraw();
+  helpLayer.hidden = false;
+  helpPanel.scrollTop = 0;
+  try { closeB.focus({ preventScroll: true }); } catch (e) {}
+}
+
+$('hudHelp').addEventListener('click', function () { openHelper(false); });
+$('hudMenu').addEventListener('click', function () {
+  G.mode = 'paused';
+  showPanel(function (p) {
+    p.appendChild(el('h2', '', '暫停'));
+    p.appendChild(el('p', '', '要繼續潛入，還是回到選單？'));
+    var r = el('div', 'row end');
+    r.appendChild(btn('回選單', '', goTitle));
+    r.appendChild(btn('繼續', 'primary', function () { hidePanel(); G.mode = 'sneak'; }));
+    p.appendChild(r);
+  });
+});
+window.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && !helpLayer.hidden) { helpLayer.hidden = true; if (G.mode === 'paused' && layer.hidden) G.mode = 'sneak'; }
+});
+
+/* ========== 啟動 ========== */
+function boot() {
+  if (typeof THREE === 'undefined') {
+    showPanel(function (p) {
+      p.appendChild(el('h2', '', '無法載入 3D 畫面'));
+      p.appendChild(el('p', '', '請確認網路連線後重新整理頁面。'));
+    });
+    return;
+  }
+  try {
+    buildWorld();
+  } catch (err) {
+    showPanel(function (p) {
+      p.appendChild(el('h2', '', '這台裝置無法顯示 3D 畫面'));
+      p.appendChild(el('p', '', '請換一個瀏覽器（建議 Chrome 或 Safari）再試一次。'));
+    });
+    return;
+  }
+  // 標題畫面背景：放幾隻農夫與田鼠
+  startSneakPreview();
+  goTitle();
+  loop();
+}
+function startSneakPreview() {
+  var f = makeFarmer(); f.position.set(-4, 0, -2); f.rotation.y = 0.6; f.userData.ring.scale.set(4, 1, 4); scene.add(f);
+  farmers.push({ obj: f, route: ROUTES[0], wp: 1, wait: 0, yaw: 0.6, phase: 0, speed: 0, visR: 4 });
+  player.position.set(3, 0, 6); player.rotation.y = 0.8;
+}
+boot();
+})();
+</script>
